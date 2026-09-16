@@ -1,0 +1,28 @@
+[
+  {
+    "id": "APEX-MU33UQNS",
+    "businessName": "Toitures & Rénovation Pro Inc.",
+    "ownerName": "Marc-André L.",
+    "phone": "514-555-0199",
+    "email": "direction@toiturespro.ca",
+    "province": "QC",
+    "amount": 85000,
+    "purpose": "Achat de Matériaux",
+    "timeInBusiness": "2-5 Years",
+    "monthlyRevenue": "$50,000 - $100,000 / mo",
+    "hasFlinksConnected": true,
+    "uploadedFileName": "statements_jan_mar_2026.pdf",
+    "status": "NEW_INBOUND_URGENT",
+    "createdAt": "2026-09-15T20:09:11.800Z",
+    "merchantGrowthPackage": {
+      "company": "Toitures & Rénovation Pro Inc.",
+      "contactName": "Marc-André L.",
+      "phone": "514-555-0199",
+      "email": "direction@toiturespro.ca",
+      "province": "QC",
+      "requestedAmount": 85000,
+      "estimatedRevenue": "$50,000 - $100,000 / mo",
+      "flinksVerified": true
+    }
+  }
+]
