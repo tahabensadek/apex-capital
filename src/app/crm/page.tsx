@@ -34,7 +34,7 @@ const PIPELINE_COLUMNS: { key: CRMLead['stage']; title: string; color: string; b
   { key: 'CONTACTED_FLINKS', title: '📱 Contacté & Flinks Ouvert', color: 'border-amber-500/80', badgeBg: 'bg-amber-500/20 text-amber-300' },
   { key: 'UNDERWRITING', title: '⚡ Souscription & Offre', color: 'border-blue-500/80', badgeBg: 'bg-blue-500/20 text-blue-300' },
   { key: 'MANDATE_SIGNED', title: '✍️ Mandat 5% Direction to Pay', color: 'border-purple-500/80', badgeBg: 'bg-purple-500/20 text-purple-300' },
-  { key: 'SENT_TO_LENDER', title: '🏦 Transmis au Prêteur (MG / AFN)', color: 'border-cyan-500/80', badgeBg: 'bg-cyan-500/20 text-cyan-300' },
+  { key: 'SENT_TO_LENDER', title: '🏦 Transmis au Prêteur (BCC Fund / AFN)', color: 'border-cyan-500/80', badgeBg: 'bg-cyan-500/20 text-cyan-300' },
   { key: 'FUNDED', title: '💰 Déboursé & Commission Virée', color: 'border-emerald-500/80', badgeBg: 'bg-emerald-500/20 text-emerald-300' },
 ];
 

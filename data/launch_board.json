@@ -1,0 +1,121 @@
+[
+  {
+    "id": "task-1",
+    "title": "Partenariat Direct BCC Fund (Amir)",
+    "description": "Accès direct au desk de souscription BCC Fund sans intermédiaire. Buy-box: 20k$/mois, 6+ mois, max 2 NSF, 500+ Beacon.",
+    "category": "CAPITAL",
+    "priority": "CRITICAL",
+    "status": "COMPLETED",
+    "completedAt": "2026-09-17T11:55:00.000Z",
+    "checklist": [
+      { "id": "c1", "text": "Contact direct avec Amir établi", "done": true },
+      { "id": "c2", "text": "Validation du courriel de soumission: partners@bccfund.com", "done": true },
+      { "id": "c3", "text": "Critères d'admissibilité verrouillés", "done": true }
+    ]
+  },
+  {
+    "id": "task-2",
+    "title": "Engin de Souscription Automatisé & Buy-Box Amir",
+    "description": "Calcul automatique du revenu mensuel vérifié, solde quotidien moyen, et détection 0 NSF en < 1.0s.",
+    "category": "TECH",
+    "priority": "CRITICAL",
+    "status": "COMPLETED",
+    "completedAt": "2026-09-17T12:41:00.000Z",
+    "checklist": [
+      { "id": "c1", "text": "Règle 20k$/mois et max 2 NSF codée", "done": true },
+      { "id": "c2", "text": "Calcul automatique des offres Tier A / Tier B", "done": true },
+      { "id": "c3", "text": "Intégration Plaid REST API", "done": true }
+    ]
+  },
+  {
+    "id": "task-3",
+    "title": "Portail Client Interactif 5-Étapes (/portal)",
+    "description": "Portail client mobile avec Domino's Pizza Tracker, connexion bancaire Plaid 256-bit et E-signature du mandat 7.5%.",
+    "category": "TECH",
+    "priority": "HIGH",
+    "status": "COMPLETED",
+    "completedAt": "2026-09-17T12:37:00.000Z",
+    "checklist": [
+      { "id": "c1", "text": "Sélecteur de banques canadiennes (RBC, TD, BMO, Desjardins, etc.)", "done": true },
+      { "id": "c2", "text": "Signature légale du mandat de courtage", "done": true },
+      { "id": "c3", "text": "Zone de dépôt sécurisée pour pièce d'identité et spécimen de chèque", "done": true }
+    ]
+  },
+  {
+    "id": "task-4",
+    "title": "Dépôt GitHub Public du Projet (Open/Source Control)",
+    "description": "Publier le repository complet apex-capital sur GitHub avec documentation d'architecture.",
+    "category": "INFRA",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "checklist": [
+      { "id": "c1", "text": "Code complet commité sur la branche main", "done": true },
+      { "id": "c2", "text": "Connexion GitHub CLI ou Remote URL", "done": false },
+      { "id": "c3", "text": "Push initial du repo public", "done": false }
+    ]
+  },
+  {
+    "id": "task-5",
+    "title": "Configuration Adresse Siège & Bureau Virtuel Regus",
+    "description": "Sécuriser l'adresse d'autorité institutionnelle au 9160 Boul. Leduc Suite 410 (DIX30) pour le footer, contrat et Google Business.",
+    "category": "LEGAL",
+    "priority": "HIGH",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Activation boîte postale / domiciliation Regus DIX30", "done": false },
+      { "id": "c2", "text": "Mise à jour du footer et contrat légal", "done": false },
+      { "id": "c3", "text": "Création fiche Google Business vérifiée", "done": false }
+    ]
+  },
+  {
+    "id": "task-6",
+    "title": "Lancement Campagne Google Ads 'Entrepreneurs & Bridge Financing'",
+    "description": "Déployer la campagne ciblée sur les entrepreneurs généraux, mécanique et fabrication industrielle avec mots-clés négatifs stricts.",
+    "category": "MARKETING",
+    "priority": "CRITICAL",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Liste de mots-clés d'intention commerciale prêts", "done": true },
+      { "id": "c2", "text": "Exclusion stricte Camionnage & Vente Autos", "done": true },
+      { "id": "c3", "text": "Configuration budget initial ($100-$150/jour)", "done": false },
+      { "id": "c4", "text": "Activation via Google Ads MCP", "done": false }
+    ]
+  },
+  {
+    "id": "task-7",
+    "title": "Tunnel & Déploiement Cloudflare Dédié pour Apex Finance",
+    "description": "Lier un domaine officiel (ex. apexcapital.ca ou apexfinance.ca) avec tunnel Cloudflare permanent sans redémarrage.",
+    "category": "INFRA",
+    "priority": "MEDIUM",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Liaison du port 3000 au domaine public", "done": false },
+      { "id": "c2", "text": "Configuration SSL automatique", "done": false }
+    ]
+  },
+  {
+    "id": "task-8",
+    "title": "Protocole de Prélèvement Automatique (PAD / EFT Canada)",
+    "description": "Intégrer le formulaire de prélèvement automatique autorisé (PAD) dans le portail pour débit direct des 7.5% de commission dès décaissement.",
+    "category": "LEGAL",
+    "priority": "HIGH",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Clause PAD insérée dans le mandat numérique", "done": true },
+      { "id": "c2", "text": "Passerelle de prélèvement EFT configurée", "done": false }
+    ]
+  },
+  {
+    "id": "task-9",
+    "title": "Premier Dossier Emprunteur Test à Amir",
+    "description": "Simuler et soumettre un premier dossier complet à partners@bccfund.com pour valider le temps de réponse < 4h.",
+    "category": "CAPITAL",
+    "priority": "CRITICAL",
+    "status": "TESTING",
+    "checklist": [
+      { "id": "c1", "text": "Package PDF généré avec relevés 12 mois + Flinks", "done": true },
+      { "id": "c2", "text": "Envoi du courriel officiel de soumission", "done": false },
+      { "id": "c3", "text": "Réception de l'offre formelle BCC Fund", "done": false }
+    ]
+  }
+]
