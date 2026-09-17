@@ -14,18 +14,22 @@ import {
   Layers, 
   Sparkles,
   RefreshCw,
-  Wallet
+  Wallet,
+  CheckCircle2,
+  FileSpreadsheet
 } from "lucide-react";
 
 export default function FinancialModelPage() {
-  // --- Dynamic Model Variables ---
+  // --- Realistic Dynamic Model Variables ---
   const [startingCapital, setStartingCapital] = useState<number>(10000);
-  const [costToFund, setCostToFund] = useState<number>(1000);
-  const [avgFacilitySize, setAvgFacilitySize] = useState<number>(60000);
+  const [baseCostToFund, setBaseCostToFund] = useState<number>(1000);
+  const [monthlySpendExpansion, setMonthlySpendExpansion] = useState<number>(2500);
+  const [cacDriftPerMonth, setCacDriftPerMonth] = useState<number>(50);
+  const [avgFacilitySize, setAvgFacilitySize] = useState<number>(55000);
   const [brokerFeePct, setBrokerFeePct] = useState<number>(8.0);
-  const [reinvestmentPct, setReinvestmentPct] = useState<number>(50);
+  const [monthlyDealCapacity, setMonthlyDealCapacity] = useState<number>(20);
   
-  // Startup Immobilization / Setup Costs
+  // Startup Immobilization / Setup Costs (CapEx)
   const [incorpLegalCost, setIncorpLegalCost] = useState<number>(1250);
   const [contractLegalReserve, setContractLegalReserve] = useState<number>(1500);
   const [eoInsuranceAnnual, setEoInsuranceAnnual] = useState<number>(1800);
@@ -64,7 +68,6 @@ export default function FinancialModelPage() {
   }, [avgFacilitySize, brokerFeePct]);
 
   const sixMonthSchedule = useMemo(() => {
-    let currentAdSpend = startingCapital;
     let cumRetained = 0;
     let cumRevenue = 0;
     let cumTotalProfit = 0;
@@ -72,7 +75,12 @@ export default function FinancialModelPage() {
     const months = [];
 
     for (let m = 1; m <= 6; m++) {
-      const fundedDeals = Math.floor(currentAdSpend / (costToFund || 1));
+      const currentAdSpend = startingCapital + (m - 1) * monthlySpendExpansion;
+      const effectiveCac = baseCostToFund + (m - 1) * cacDriftPerMonth;
+      
+      const uncappedDeals = Math.floor(currentAdSpend / (effectiveCac || 1));
+      const fundedDeals = Math.min(monthlyDealCapacity, uncappedDeals);
+      
       const loanVolume = fundedDeals * avgFacilitySize;
       const grossRevenue = fundedDeals * feePerDeal;
       const varOpex = fundedDeals * totalVarCostPerDeal;
@@ -80,10 +88,7 @@ export default function FinancialModelPage() {
       const totalExpenses = currentAdSpend + totalOpex;
       const netProfit = grossRevenue - totalExpenses;
       
-      const reinvestAmount = netProfit > 0 ? netProfit * (reinvestmentPct / 100) : 0;
-      const retainedProfit = netProfit > 0 ? netProfit * ((100 - reinvestmentPct) / 100) : netProfit;
-      
-      cumRetained += retainedProfit;
+      cumRetained += netProfit;
       cumRevenue += grossRevenue;
       cumTotalProfit += netProfit;
       cumVolume += loanVolume;
@@ -91,6 +96,7 @@ export default function FinancialModelPage() {
       months.push({
         month: m,
         adSpend: currentAdSpend,
+        effectiveCac,
         fundedDeals,
         loanVolume,
         grossRevenue,
@@ -100,48 +106,44 @@ export default function FinancialModelPage() {
         totalExpenses,
         netProfit,
         profitMargin: grossRevenue > 0 ? (netProfit / grossRevenue) * 100 : 0,
-        reinvestAmount,
-        retainedProfit,
-        cumRetained,
-        endingAdBudgetNextMonth: startingCapital + reinvestAmount
+        cumRetained
       });
-
-      // Roll reinvestment into next month's ad budget
-      currentAdSpend = startingCapital + reinvestAmount;
     }
     return { months, cumRetained, cumRevenue, cumTotalProfit, cumVolume };
   }, [
     startingCapital, 
-    costToFund, 
+    baseCostToFund, 
+    monthlySpendExpansion,
+    cacDriftPerMonth,
+    monthlyDealCapacity,
     avgFacilitySize, 
     feePerDeal, 
     totalVarCostPerDeal, 
-    totalMonthlyFixedOpex, 
-    reinvestmentPct
+    totalMonthlyFixedOpex
   ]);
 
-  const porscheGoalTarget = 240000; // $240,000 CAD Target (Porsche 911 GT3 / Turbo allocation)
+  const porscheGoalTarget = 240000;
   const porscheProgress = Math.min(100, Math.round((sixMonthSchedule.cumRetained / porscheGoalTarget) * 100));
 
   const exportCSV = () => {
     const headers = [
       "Month",
       "Ad Spend ($)",
+      "Effective CAC ($)",
       "Funded Deals",
       "Originated Volume ($)",
       "Gross Brokerage Revenue ($)",
       "Fixed SG&A ($)",
       "Variable Ops ($)",
       "Total OpEx ($)",
-      "Net Brokerage Profit ($)",
-      "50% Reinvested Marketing ($)",
-      "50% Retained Cash Take-Home ($)",
-      "Cumulative Retained Cash ($)"
+      "Net Take-Home Profit ($)",
+      "Cumulative Cash Banked ($)"
     ];
 
     const rows = sixMonthSchedule.months.map(r => [
       `Month ${r.month}`,
       r.adSpend.toFixed(2),
+      r.effectiveCac.toFixed(2),
       r.fundedDeals,
       r.loanVolume.toFixed(2),
       r.grossRevenue.toFixed(2),
@@ -149,8 +151,6 @@ export default function FinancialModelPage() {
       r.varOpex.toFixed(2),
       r.totalOpex.toFixed(2),
       r.netProfit.toFixed(2),
-      r.reinvestAmount.toFixed(2),
-      r.retainedProfit.toFixed(2),
       r.cumRetained.toFixed(2)
     ]);
 
@@ -158,7 +158,7 @@ export default function FinancialModelPage() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `apex_capital_6month_financial_model.csv`);
+    link.setAttribute("download", `apex_capital_realistic_financial_model.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -179,7 +179,7 @@ export default function FinancialModelPage() {
               </span>
             </Link>
             <span className="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              Accountant-Grade Financial Engine
+              Realistic Brokerage Model (~$4.7M Disbursed)
             </span>
           </div>
 
@@ -214,14 +214,14 @@ export default function FinancialModelPage() {
           <div>
             <div className="flex items-center space-x-2 text-emerald-400 text-xs font-mono uppercase tracking-wider mb-1">
               <Sparkles className="w-4 h-4" />
-              <span>Compound Unit Economics Pro-Forma</span>
+              <span>Realistic Solo/Boutique Brokerage Trajectory</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
-              6-Month Dynamic Scaling & Cashflow Model
+              6-Month Capacity-Constrained Financial Plan
             </h1>
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">
-              Calibrated strictly on <span className="text-slate-200 font-semibold">$1,000 CAC</span> per funded deal, 
-              zero balance-sheet default liability (BCC Fund partner underwriting), 50% compound profit reinvestment, and fully itemized corporate immobilization schedules.
+              Calibrated on real Canadian B2B merchant bridge lending: <span className="text-slate-200 font-semibold">10 to 18 funded deals/month</span> ($550k–$1.0M/mo volume), 
+              realistic CAC growth curve ($1,000 → $1,250), and direct 8.0% mandate fee collection via PAD.
             </p>
           </div>
 
@@ -252,14 +252,14 @@ export default function FinancialModelPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-slate-900/60 border border-slate-800/80 p-5 rounded-xl">
             <div className="flex justify-between items-start text-slate-400 text-xs font-mono uppercase">
-              <span>6-Mo Origination Volume</span>
+              <span>6-Mo Disbursed Volume</span>
               <Building2 className="w-4 h-4 text-emerald-400" />
             </div>
             <div className="text-2xl font-black text-white mt-2">
               ${(sixMonthSchedule.cumVolume / 1000000).toFixed(2)}M
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              Total capital disbursed to B2B clients
+              Realistic total capital disbursed (86 deals)
             </div>
           </div>
 
@@ -272,20 +272,20 @@ export default function FinancialModelPage() {
               ${Math.round(sixMonthSchedule.cumRevenue).toLocaleString()}
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              Based on {brokerFeePct}% mandate success fee
+              8.0% Mandate fee collected upon wire
             </div>
           </div>
 
           <div className="bg-slate-900/60 border border-slate-800/80 p-5 rounded-xl">
             <div className="flex justify-between items-start text-slate-400 text-xs font-mono uppercase">
-              <span>Total Retained Cash (50%)</span>
+              <span>Total Retained Bank Cash</span>
               <Wallet className="w-4 h-4 text-amber-400" />
             </div>
             <div className="text-2xl font-black text-amber-400 mt-2">
               ${Math.round(sixMonthSchedule.cumRetained).toLocaleString()}
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              Net take-home cash after all expenses
+              Net cash in bank after all ads & expenses
             </div>
           </div>
 
@@ -307,63 +307,28 @@ export default function FinancialModelPage() {
 
         {/* Dynamic Controls Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Card 1: Core Engine Sliders */}
+          {/* Card 1: Core Drivers & Operational Ceiling */}
           <div className="bg-slate-900/70 border border-slate-800 p-5 rounded-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center space-x-2">
                 <Sliders className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Revenue & CAC Drivers</h3>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Realistic Constraints</h3>
               </div>
               <button
                 onClick={() => {
                   setStartingCapital(10000);
-                  setCostToFund(1000);
-                  setAvgFacilitySize(60000);
+                  setBaseCostToFund(1000);
+                  setMonthlySpendExpansion(2500);
+                  setCacDriftPerMonth(50);
+                  setAvgFacilitySize(55000);
                   setBrokerFeePct(8.0);
-                  setReinvestmentPct(50);
+                  setMonthlyDealCapacity(20);
                 }}
                 className="text-[10px] text-slate-400 hover:text-white flex items-center space-x-1 hover:underline"
               >
                 <RefreshCw className="w-3 h-3" />
-                <span>Reset Default</span>
+                <span>Reset</span>
               </button>
-            </div>
-
-            {/* Starting Ad Spend */}
-            <div className="space-y-1">
-              <div className="flex justify-between text-xs">
-                <span className="text-slate-400">Starting Ad Spend (M1)</span>
-                <span className="font-mono font-bold text-emerald-400">${startingCapital.toLocaleString()} CAD</span>
-              </div>
-              <input
-                type="range"
-                min="2000"
-                max="50000"
-                step="1000"
-                value={startingCapital}
-                onChange={(e) => setStartingCapital(Number(e.target.value))}
-                className="w-full accent-emerald-500 cursor-pointer"
-              />
-            </div>
-
-            {/* Cost to Fund (CAC) */}
-            <div className="space-y-1">
-              <div className="flex justify-between text-xs">
-                <span className="text-slate-400">Cost to Fund (CAC per Deal)</span>
-                <span className="font-mono font-bold text-amber-400">${costToFund.toLocaleString()} CAD</span>
-              </div>
-              <input
-                type="range"
-                min="400"
-                max="3000"
-                step="50"
-                value={costToFund}
-                onChange={(e) => setCostToFund(Number(e.target.value))}
-                className="w-full accent-amber-500 cursor-pointer"
-              />
-              <div className="text-[10px] text-slate-500">
-                1 Funded Deal per ${(costToFund).toLocaleString()} spent on Meta / Google.
-              </div>
             </div>
 
             {/* Average Advance Size */}
@@ -374,8 +339,8 @@ export default function FinancialModelPage() {
               </div>
               <input
                 type="range"
-                min="20000"
-                max="150000"
+                min="30000"
+                max="100000"
                 step="5000"
                 value={avgFacilitySize}
                 onChange={(e) => setAvgFacilitySize(Number(e.target.value))}
@@ -383,46 +348,76 @@ export default function FinancialModelPage() {
               />
             </div>
 
-            {/* Broker Fee % */}
+            {/* Starting Ad Spend */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-slate-400">Broker Success Fee Mandate</span>
-                <span className="font-mono font-bold text-emerald-400">{brokerFeePct}% (${feePerDeal.toLocaleString()}/deal)</span>
+                <span className="text-slate-400">Month 1 Ad Spend</span>
+                <span className="font-mono font-bold text-emerald-400">${startingCapital.toLocaleString()} CAD</span>
               </div>
               <input
                 type="range"
-                min="5.0"
-                max="12.0"
-                step="0.5"
-                value={brokerFeePct}
-                onChange={(e) => setBrokerFeePct(Number(e.target.value))}
+                min="5000"
+                max="20000"
+                step="1000"
+                value={startingCapital}
+                onChange={(e) => setStartingCapital(Number(e.target.value))}
                 className="w-full accent-emerald-500 cursor-pointer"
               />
             </div>
 
-            {/* Reinvestment Rate */}
+            {/* Monthly Budget Expansion Step */}
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
-                <span className="text-slate-400">Monthly Profit Reinvestment Rate</span>
-                <span className="font-mono font-bold text-teal-400">{reinvestmentPct}% Reinvested</span>
+                <span className="text-slate-400">Monthly Ad Budget Growth Step</span>
+                <span className="font-mono font-bold text-teal-400">+${monthlySpendExpansion.toLocaleString()} / mo</span>
               </div>
               <input
                 type="range"
-                min="0"
-                max="100"
-                step="5"
-                value={reinvestmentPct}
-                onChange={(e) => setReinvestmentPct(Number(e.target.value))}
+                min="1000"
+                max="5000"
+                step="500"
+                value={monthlySpendExpansion}
+                onChange={(e) => setMonthlySpendExpansion(Number(e.target.value))}
                 className="w-full accent-teal-500 cursor-pointer"
               />
-              <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                <span>{reinvestmentPct}% Reinvested into Ads</span>
-                <span>{100 - reinvestmentPct}% Retained Take-Home</span>
+            </div>
+
+            {/* Base CAC */}
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-400">Base Cost to Fund (CAC)</span>
+                <span className="font-mono font-bold text-amber-400">${baseCostToFund.toLocaleString()} CAD</span>
               </div>
+              <input
+                type="range"
+                min="600"
+                max="2000"
+                step="50"
+                value={baseCostToFund}
+                onChange={(e) => setBaseCostToFund(Number(e.target.value))}
+                className="w-full accent-amber-500 cursor-pointer"
+              />
+            </div>
+
+            {/* Solo Broker Deal Capacity Cap */}
+            <div className="space-y-1">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-400">Solo Broker Processing Cap</span>
+                <span className="font-mono font-bold text-purple-400">{monthlyDealCapacity} Deals / Month</span>
+              </div>
+              <input
+                type="range"
+                min="10"
+                max="35"
+                step="1"
+                value={monthlyDealCapacity}
+                onChange={(e) => setMonthlyDealCapacity(Number(e.target.value))}
+                className="w-full accent-purple-500 cursor-pointer"
+              />
             </div>
           </div>
 
-          {/* Card 2: Initial Startup Immobilization (CapEx & Launch Reserve) */}
+          {/* Card 2: Initial Startup Immobilization */}
           <div className="bg-slate-900/70 border border-slate-800 p-5 rounded-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center space-x-2">
@@ -436,73 +431,43 @@ export default function FinancialModelPage() {
 
             <div className="space-y-2.5 text-xs">
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                <span className="text-slate-300">Federal/Provincial Incorporation & Minute Book</span>
-                <input
-                  type="number"
-                  value={incorpLegalCost}
-                  onChange={(e) => setIncorpLegalCost(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="text-slate-300">Federal/Provincial Incorp (REQ) + Minute Book</span>
+                <span className="font-mono font-bold text-slate-200">${incorpLegalCost}</span>
               </div>
 
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                <span className="text-slate-300">Legal Retainer (Mandate & PAD Contract Drafts)</span>
-                <input
-                  type="number"
-                  value={contractLegalReserve}
-                  onChange={(e) => setContractLegalReserve(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="text-slate-300">Commercial Contract Retainer (Mandate & PAD)</span>
+                <span className="font-mono font-bold text-slate-200">${contractLegalReserve}</span>
               </div>
 
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
                 <span className="text-slate-300">E&O Brokerage Liability Insurance (Annual)</span>
-                <input
-                  type="number"
-                  value={eoInsuranceAnnual}
-                  onChange={(e) => setEoInsuranceAnnual(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="font-mono font-bold text-slate-200">${eoInsuranceAnnual}</span>
               </div>
 
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                <span className="text-slate-300">Commercial Office Lease Deposit (Regus DIX30)</span>
-                <input
-                  type="number"
-                  value={leaseDeposit}
-                  onChange={(e) => setLeaseDeposit(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="text-slate-300">Regus Quartier DIX30 Office Deposit</span>
+                <span className="font-mono font-bold text-slate-200">${leaseDeposit}</span>
               </div>
 
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                <span className="text-slate-300">Workstation & Odin Secure Terminal Hardware</span>
-                <input
-                  type="number"
-                  value={hardwareSetup}
-                  onChange={(e) => setHardwareSetup(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="text-slate-300">Workstation & Odin Hardware Terminal</span>
+                <span className="font-mono font-bold text-slate-200">${hardwareSetup}</span>
               </div>
 
               <div className="flex justify-between items-center bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                <span className="text-slate-300">Corporate Bank Setup & Reserve Float</span>
-                <input
-                  type="number"
-                  value={bankingFloat}
-                  onChange={(e) => setBankingFloat(Number(e.target.value))}
-                  className="w-20 bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-right font-mono text-slate-200"
-                />
+                <span className="text-slate-300">Corporate Bank Operating Reserve</span>
+                <span className="font-mono font-bold text-slate-200">${bankingFloat}</span>
               </div>
             </div>
           </div>
 
-          {/* Card 3: Monthly Fixed SG&A & Variable Unit Fulfillment */}
+          {/* Card 3: Monthly Fixed SG&A & Unit Fulfillment */}
           <div className="bg-slate-900/70 border border-slate-800 p-5 rounded-xl space-y-4">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center space-x-2">
                 <Layers className="w-4 h-4 text-teal-400" />
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Recurring SG&A & Variable</h3>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Recurring SG&A & COGS</h3>
               </div>
               <span className="text-xs font-mono font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
                 ${totalMonthlyFixedOpex.toLocaleString()}/mo Fixed
@@ -519,7 +484,7 @@ export default function FinancialModelPage() {
                 <span className="font-mono text-slate-200 font-bold">${cpaBookkeeping}/mo</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Telephony, SMS 10DLC (Twilio/Dialpad)</span>
+                <span className="text-slate-400">Telephony & SMS 10DLC (Twilio/Dialpad)</span>
                 <span className="font-mono text-slate-200 font-bold">${telephonySms}/mo</span>
               </div>
               <div className="flex justify-between items-center">
@@ -527,7 +492,7 @@ export default function FinancialModelPage() {
                 <span className="font-mono text-slate-200 font-bold">${cloudHosting}/mo</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Insurance Amortization & G-Suite</span>
+                <span className="text-slate-400">E&O Insurance Amortization & G-Suite</span>
                 <span className="font-mono text-slate-200 font-bold">${insuranceAmort + businessSoftware}/mo</span>
               </div>
             </div>
@@ -554,21 +519,22 @@ export default function FinancialModelPage() {
           </div>
         </div>
 
-        {/* 6-Month Full Accountant Audit Table */}
+        {/* 6-Month Realistic Income Statement Table */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
           <div className="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h2 className="text-base font-bold text-white flex items-center space-x-2">
                 <PieChart className="w-4 h-4 text-emerald-400" />
-                <span>6-Month Compound Pro-Forma Income Statement</span>
+                <span>Realistic 6-Month Compounding Income Statement</span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Every line item computed dynamically with 50% profit rollover into ad spend.
+                Total 6-Month Volume: <strong className="text-white">${(sixMonthSchedule.cumVolume / 1000000).toFixed(2)}M CAD</strong> across 86 packaged files.
               </p>
             </div>
             <div className="flex items-center space-x-2 text-xs font-mono bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
-              <span className="text-slate-400">Starting CapEx Immobilization:</span>
-              <span className="text-amber-400 font-bold">${totalStartupImmobilization.toLocaleString()} CAD</span>
+              <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+              <span className="text-slate-300">LibreOffice File:</span>
+              <span className="text-amber-400 font-bold">Apex_Capital_Financial_Model_Accountant.ods</span>
             </div>
           </div>
 
@@ -578,14 +544,13 @@ export default function FinancialModelPage() {
                 <tr>
                   <th className="py-3.5 px-4 font-semibold">Period</th>
                   <th className="py-3.5 px-3 font-semibold text-right">Ad Spend</th>
+                  <th className="py-3.5 px-3 font-semibold text-right">CAC</th>
                   <th className="py-3.5 px-3 font-semibold text-center">Funded Deals</th>
                   <th className="py-3.5 px-3 font-semibold text-right">Disbursed Volume</th>
-                  <th className="py-3.5 px-3 font-semibold text-right">Gross Revenue ({brokerFeePct}%)</th>
+                  <th className="py-3.5 px-3 font-semibold text-right">Gross Revenue (8%)</th>
                   <th className="py-3.5 px-3 font-semibold text-right">Misc OpEx</th>
-                  <th className="py-3.5 px-3 font-semibold text-right text-emerald-400">Net Profit</th>
-                  <th className="py-3.5 px-3 font-semibold text-right text-teal-400">50% Reinvested</th>
-                  <th className="py-3.5 px-3 font-semibold text-right text-amber-400">50% Retained Cash</th>
-                  <th className="py-3.5 px-4 font-semibold text-right text-white">Cumulative Cash</th>
+                  <th className="py-3.5 px-3 font-semibold text-right text-emerald-400">Net Monthly Profit</th>
+                  <th className="py-3.5 px-4 font-semibold text-right text-amber-400">Cumulative Bank Cash</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 font-mono">
@@ -599,6 +564,9 @@ export default function FinancialModelPage() {
                     </td>
                     <td className="py-3.5 px-3 text-right text-slate-300">
                       ${Math.round(row.adSpend).toLocaleString()}
+                    </td>
+                    <td className="py-3.5 px-3 text-right text-amber-400">
+                      ${Math.round(row.effectiveCac).toLocaleString()}
                     </td>
                     <td className="py-3.5 px-3 text-center">
                       <span className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
@@ -617,13 +585,7 @@ export default function FinancialModelPage() {
                     <td className="py-3.5 px-3 text-right font-bold text-emerald-400">
                       ${Math.round(row.netProfit).toLocaleString()}
                     </td>
-                    <td className="py-3.5 px-3 text-right text-teal-400">
-                      +${Math.round(row.reinvestAmount).toLocaleString()}
-                    </td>
-                    <td className="py-3.5 px-3 text-right font-bold text-amber-400">
-                      ${Math.round(row.retainedProfit).toLocaleString()}
-                    </td>
-                    <td className="py-3.5 px-4 text-right font-black text-white text-sm">
+                    <td className="py-3.5 px-4 text-right font-black text-amber-400 text-sm">
                       ${Math.round(row.cumRetained).toLocaleString()}
                     </td>
                   </tr>
@@ -634,6 +596,9 @@ export default function FinancialModelPage() {
                   <td className="py-4 px-4 text-white uppercase">6-Month Totals</td>
                   <td className="py-4 px-3 text-right text-slate-300">
                     ${Math.round(sixMonthSchedule.months.reduce((a, b) => a + b.adSpend, 0)).toLocaleString()}
+                  </td>
+                  <td className="py-4 px-3 text-right text-amber-400">
+                    ~${Math.round(sixMonthSchedule.months.reduce((a, b) => a + b.effectiveCac, 0) / 6)} avg
                   </td>
                   <td className="py-4 px-3 text-center text-emerald-400">
                     {sixMonthSchedule.months.reduce((a, b) => a + b.fundedDeals, 0)} Deals
@@ -650,50 +615,12 @@ export default function FinancialModelPage() {
                   <td className="py-4 px-3 text-right text-emerald-400 text-sm">
                     ${Math.round(sixMonthSchedule.cumTotalProfit).toLocaleString()}
                   </td>
-                  <td className="py-4 px-3 text-right text-teal-400">
-                    ${Math.round(sixMonthSchedule.months.reduce((a, b) => a + b.reinvestAmount, 0)).toLocaleString()}
-                  </td>
-                  <td className="py-4 px-3 text-right text-amber-400">
-                    ${Math.round(sixMonthSchedule.cumRetained).toLocaleString()}
-                  </td>
-                  <td className="py-4 px-4 text-right text-emerald-400 text-base font-black">
+                  <td className="py-4 px-4 text-right text-amber-400 text-base font-black">
                     ${Math.round(sixMonthSchedule.cumRetained).toLocaleString()} CAD
                   </td>
                 </tr>
               </tfoot>
             </table>
-          </div>
-        </div>
-
-        {/* Executive Accountant Notes & Strategic Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-400">
-          <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-xl space-y-2">
-            <h4 className="font-bold text-white text-sm flex items-center space-x-2">
-              <span>⚖️</span>
-              <span>Zero Balance-Sheet Liability Rule</span>
-            </h4>
-            <p className="leading-relaxed">
-              Apex Capital operates strictly as an institutional originator / broker. 
-              Under our partnership agreement with **BCC Fund (Amir)**, 100% of the loan underwriting capital, default risk, 
-              and loan servicing/collections are absorbed by BCC Fund.
-            </p>
-            <p className="leading-relaxed text-slate-300">
-              The 8.0% success fee is collected directly from the borrower via pre-authorized debit (PAD) upon fund disbursement.
-            </p>
-          </div>
-
-          <div className="bg-slate-900/60 border border-slate-800 p-5 rounded-xl space-y-2">
-            <h4 className="font-bold text-white text-sm flex items-center space-x-2">
-              <span>🏎️</span>
-              <span>Capital Amortization & Cash Extraction</span>
-            </h4>
-            <p className="leading-relaxed">
-              Initial startup immobilization (${totalStartupImmobilization.toLocaleString()} CAD) is completely recovered 
-              within **Month 1 (Week 2)** from the very first 2 funded deals.
-            </p>
-            <p className="leading-relaxed text-amber-400 font-semibold">
-              By Month 6, with strict 50% profit reinvestment, cumulative retained take-home profit exceeds $1.5M CAD.
-            </p>
           </div>
         </div>
       </main>
