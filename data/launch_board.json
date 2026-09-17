@@ -8,9 +8,21 @@
     "status": "COMPLETED",
     "completedAt": "2026-09-17T11:55:00.000Z",
     "checklist": [
-      { "id": "c1", "text": "Contact direct avec Amir établi", "done": true },
-      { "id": "c2", "text": "Validation du courriel de soumission: partners@bccfund.com", "done": true },
-      { "id": "c3", "text": "Critères d'admissibilité verrouillés", "done": true }
+      {
+        "id": "c1",
+        "text": "Contact direct avec Amir établi",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Validation du courriel de soumission: partners@bccfund.com",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "text": "Critères d'admissibilité verrouillés",
+        "done": true
+      }
     ]
   },
   {
@@ -22,9 +34,21 @@
     "status": "COMPLETED",
     "completedAt": "2026-09-17T12:41:00.000Z",
     "checklist": [
-      { "id": "c1", "text": "Règle 20k$/mois et max 2 NSF codée", "done": true },
-      { "id": "c2", "text": "Calcul automatique des offres Tier A / Tier B", "done": true },
-      { "id": "c3", "text": "Intégration Plaid REST API", "done": true }
+      {
+        "id": "c1",
+        "text": "Règle 20k$/mois et max 2 NSF codée",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Calcul automatique des offres Tier A / Tier B",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "text": "Intégration Plaid REST API",
+        "done": true
+      }
     ]
   },
   {
@@ -36,9 +60,21 @@
     "status": "COMPLETED",
     "completedAt": "2026-09-17T12:37:00.000Z",
     "checklist": [
-      { "id": "c1", "text": "Sélecteur de banques canadiennes (RBC, TD, BMO, Desjardins, etc.)", "done": true },
-      { "id": "c2", "text": "Signature légale du mandat de courtage", "done": true },
-      { "id": "c3", "text": "Zone de dépôt sécurisée pour pièce d'identité et spécimen de chèque", "done": true }
+      {
+        "id": "c1",
+        "text": "Sélecteur de banques canadiennes (RBC, TD, BMO, Desjardins, etc.)",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Signature légale du mandat de courtage",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "text": "Zone de dépôt sécurisée pour pièce d'identité et spécimen de chèque",
+        "done": true
+      }
     ]
   },
   {
@@ -47,12 +83,25 @@
     "description": "Publier le repository complet apex-capital sur GitHub avec documentation d'architecture.",
     "category": "INFRA",
     "priority": "HIGH",
-    "status": "IN_PROGRESS",
+    "status": "COMPLETED",
     "checklist": [
-      { "id": "c1", "text": "Code complet commité sur la branche main", "done": true },
-      { "id": "c2", "text": "Connexion GitHub CLI ou Remote URL", "done": false },
-      { "id": "c3", "text": "Push initial du repo public", "done": false }
-    ]
+      {
+        "id": "c1",
+        "text": "Code complet commité sur la branche main",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Connexion GitHub CLI ou Remote URL",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "text": "Push initial du repo public",
+        "done": true
+      }
+    ],
+    "completedAt": "2026-09-17T19:17:05.213Z"
   },
   {
     "id": "task-5",
@@ -62,9 +111,21 @@
     "priority": "HIGH",
     "status": "TODO",
     "checklist": [
-      { "id": "c1", "text": "Activation boîte postale / domiciliation Regus DIX30", "done": false },
-      { "id": "c2", "text": "Mise à jour du footer et contrat légal", "done": false },
-      { "id": "c3", "text": "Création fiche Google Business vérifiée", "done": false }
+      {
+        "id": "c1",
+        "text": "Activation boîte postale / domiciliation Regus DIX30",
+        "done": false
+      },
+      {
+        "id": "c2",
+        "text": "Mise à jour du footer et contrat légal",
+        "done": false
+      },
+      {
+        "id": "c3",
+        "text": "Création fiche Google Business vérifiée",
+        "done": false
+      }
     ]
   },
   {
@@ -75,10 +136,26 @@
     "priority": "CRITICAL",
     "status": "TODO",
     "checklist": [
-      { "id": "c1", "text": "Liste de mots-clés d'intention commerciale prêts", "done": true },
-      { "id": "c2", "text": "Exclusion stricte Camionnage & Vente Autos", "done": true },
-      { "id": "c3", "text": "Configuration budget initial ($100-$150/jour)", "done": false },
-      { "id": "c4", "text": "Activation via Google Ads MCP", "done": false }
+      {
+        "id": "c1",
+        "text": "Liste de mots-clés d'intention commerciale prêts",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Exclusion stricte Camionnage & Vente Autos",
+        "done": true
+      },
+      {
+        "id": "c3",
+        "text": "Configuration budget initial ($100-$150/jour)",
+        "done": false
+      },
+      {
+        "id": "c4",
+        "text": "Activation via Google Ads MCP",
+        "done": false
+      }
     ]
   },
   {
@@ -89,8 +166,16 @@
     "priority": "MEDIUM",
     "status": "TODO",
     "checklist": [
-      { "id": "c1", "text": "Liaison du port 3000 au domaine public", "done": false },
-      { "id": "c2", "text": "Configuration SSL automatique", "done": false }
+      {
+        "id": "c1",
+        "text": "Liaison du port 3000 au domaine public",
+        "done": false
+      },
+      {
+        "id": "c2",
+        "text": "Configuration SSL automatique",
+        "done": false
+      }
     ]
   },
   {
@@ -101,8 +186,16 @@
     "priority": "HIGH",
     "status": "TODO",
     "checklist": [
-      { "id": "c1", "text": "Clause PAD insérée dans le mandat numérique", "done": true },
-      { "id": "c2", "text": "Passerelle de prélèvement EFT configurée", "done": false }
+      {
+        "id": "c1",
+        "text": "Clause PAD insérée dans le mandat numérique",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Passerelle de prélèvement EFT configurée",
+        "done": false
+      }
     ]
   },
   {
@@ -113,9 +206,21 @@
     "priority": "CRITICAL",
     "status": "TESTING",
     "checklist": [
-      { "id": "c1", "text": "Package PDF généré avec relevés 12 mois + Flinks", "done": true },
-      { "id": "c2", "text": "Envoi du courriel officiel de soumission", "done": false },
-      { "id": "c3", "text": "Réception de l'offre formelle BCC Fund", "done": false }
+      {
+        "id": "c1",
+        "text": "Package PDF généré avec relevés 12 mois + Flinks",
+        "done": true
+      },
+      {
+        "id": "c2",
+        "text": "Envoi du courriel officiel de soumission",
+        "done": false
+      },
+      {
+        "id": "c3",
+        "text": "Réception de l'offre formelle BCC Fund",
+        "done": false
+      }
     ]
   }
 ]
