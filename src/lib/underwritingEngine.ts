@@ -117,33 +117,37 @@ export function runUnderwritingEngine(data: FlinksAccountData): UnderwritingResu
   const netMonthlyCashFlow = (totalDeposits - totalDebits) / monthsCovered;
 
   // 5. Decision & Tiering Logic
-  let decision: UnderwritingResult['decision'] = 'APPROVED_TIER_A';
-  let headline = 'APPROBATION PRIORITAIRE 24H (TIER A)';
+  // Amir (BCC Fund) Exact Buy-Box Criteria
+  const MIN_MONTHLY_REVENUE = 20000;
+  const MAX_ALLOWED_NSFS_PER_MONTH = 2;
+  const MIN_CREDIT_SCORE = 500;
 
-  if (monthlyGrossRevenue < 10000) {
+  // Evaluate against Amir's criteria
+  const nsfPerMonth = monthsCovered > 0 ? (nsfCount90Days / monthsCovered) : nsfCount90Days;
+  const isRevenueQualified = monthlyGrossRevenue >= MIN_MONTHLY_REVENUE;
+  const isNsfQualified = nsfPerMonth <= MAX_ALLOWED_NSFS_PER_MONTH;
+
+  let decision: UnderwritingResult['decision'] = 'APPROVED_TIER_A';
+  let headline = 'APPROBATION IMMÉDIATE BCC FUND (TIER A / GOLDEN FILE)';
+
+  if (!isRevenueQualified) {
     decision = 'DECLINED';
-    headline = 'DOSSIER NON ADMISSIBLE — Revenus < 10k$/mois';
-    riskFlags.push('Revenus mensuels moyens inférieurs au seuil minimum institutionnel (10 000 $ CAD).');
-  } else if (nsfCount90Days > 5) {
+    headline = `NON-ADMISSIBLE : Revenu mensuel inférieur au seuil Amir ($${Math.round(monthlyGrossRevenue).toLocaleString()} / min $20,000)`;
+    riskFlags.push(`Revenu mensuel ($${Math.round(monthlyGrossRevenue).toLocaleString()}) inférieur au minimum requis ($20,000 CAD).`);
+  } else if (!isNsfQualified) {
     decision = 'DECLINED';
-    headline = 'DOSSIER NON ADMISSIBLE — Excès de NSF (> 5 sur 90j)';
-    riskFlags.push(`Présence de ${nsfCount90Days} frais de sans provision (NSF) sur les 90 derniers jours.`);
-  } else if (existingMca.length >= 2) {
-    decision = 'CONDITIONAL_TIER_C';
-    headline = 'CONDITIONNEL — Position 3 (Stacking Élevé / Rachat Requis)';
-    riskFlags.push(`Deux avances MCA déjà actives détectées (${existingMca.map(m => m.lenderName).join(', ')}). Rachat de prêt recommandé.`);
-  } else if (existingMca.length === 1 || nsfCount90Days >= 2 || avgDailyBalance < 2000) {
-    decision = 'APPROVED_TIER_B';
-    headline = 'APPROUVÉ STANDARD — 2e Position ou Terme 6-8 Mois (TIER B)';
-    if (existingMca.length === 1) riskFlags.push(`1 prêt MCA existant (${existingMca[0].lenderName}).`);
-    if (nsfCount90Days >= 2) riskFlags.push(`${nsfCount90Days} NSF détectés.`);
-    if (avgDailyBalance < 2000) riskFlags.push('Solde quotidien moyen faible (< 2 000 $).');
-  } else {
+    headline = `NON-ADMISSIBLE : Trop de NSF (${nsfPerMonth.toFixed(1)}/mois - max 2 autorisé)`;
+    riskFlags.push(`Moyenne de ${nsfPerMonth.toFixed(1)} NSF/mois dépasse la limite stricte de Amir (max 2/mois).`);
+  } else if (monthlyGrossRevenue >= 35000 && nsfCount90Days === 0) {
     decision = 'APPROVED_TIER_A';
     headline = 'APPROBATION IMMÉDIATE FAST-TRACK 24H (TIER A / GOLDEN FILE)';
     strengths.push('0 Stacking MCA détecté — 1ère position exclusive.');
     strengths.push(`Solde de clôture quotidien solide (${Math.round(avgDailyBalance).toLocaleString()} $ CAD).`);
     strengths.push(`${nsfCount90Days} NSF sur 90 jours (Historique bancaire propre).`);
+  } else {
+    decision = 'APPROVED_TIER_B';
+    headline = 'APPROBATION STANDARD BCC FUND (TIER B / ADMISSIBLE 24H)';
+    strengths.push(`Conforme aux critères Amir : $${Math.round(monthlyGrossRevenue).toLocaleString()}/mo et ${nsfCount90Days} NSF total.`);
   }
 
   // 6. Loan Sizing (70% - 100% of Monthly Gross Revenue)
