@@ -26,7 +26,7 @@ export default function FinancialModelPage() {
   const [monthlySpendExpansion, setMonthlySpendExpansion] = useState<number>(2500);
   const [cacDriftPerMonth, setCacDriftPerMonth] = useState<number>(50);
   const [avgFacilitySize, setAvgFacilitySize] = useState<number>(55000);
-  const [brokerFeePct, setBrokerFeePct] = useState<number>(8.0);
+  const [brokerFeePct, setBrokerFeePct] = useState<number>(7.0);
   const [monthlyDealCapacity, setMonthlyDealCapacity] = useState<number>(20);
   
   // Startup Immobilization / Setup Costs (CapEx)
