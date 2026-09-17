@@ -37,6 +37,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, lang, setLang }) =
           <span>{lang === "fr" ? "Souscription Directe 24H Active" : "24H Direct Underwriting Active"}</span>
         </div>
 
+        {/* Navigation Links */}
+        <div className="hidden lg:flex items-center space-x-6 text-xs font-semibold text-slate-300">
+          <a href="/financials" className="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Financial Model</span>
+          </a>
+          <a href="/crm" className="hover:text-white transition-colors">
+            Trading CRM
+          </a>
+          <a href="/board" className="hover:text-white transition-colors">
+            War Room
+          </a>
+        </div>
+
         {/* Action Controls */}
         <div className="flex items-center gap-3">
           {/* Lang Toggle */}
