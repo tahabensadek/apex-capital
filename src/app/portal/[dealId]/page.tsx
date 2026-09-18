@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { 
   Building2, ShieldCheck, CheckCircle2, Clock, AlertTriangle, ArrowRight, 
   FileText, Upload, Lock, Sparkles, Phone, Mail, Check, CreditCard, ChevronRight, Zap
@@ -40,12 +41,9 @@ const CANADIAN_BANKS = [
   { id: 'nbc', name: 'National Bank', logo: '⚡', color: 'from-red-500 to-red-700' },
 ];
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default function ClientPortalPage({ params }: { params: Promise<{ dealId: string }> }) {
-  const resolvedParams = use(params);
-  const dealId = resolvedParams.dealId;
+export default function ClientPortalPage() {
+  const routeParams = useParams();
+  const dealId = (routeParams?.dealId as string) || "deal_8829";
 
   const [deal, setDeal] = useState<DealData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
