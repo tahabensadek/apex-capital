@@ -374,7 +374,10 @@ export default function ClientPortalPage() {
 
             {!plaidSuccess ? (
               <div className="space-y-4">
-                <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">Select Your Financial Institution:</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-mono text-slate-400 uppercase tracking-wider">Sélectionnez votre institution financière canadienne :</p>
+                  <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">Sandbox Actif: user_good / pass_good</span>
+                </div>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {CANADIAN_BANKS.map(bank => (
@@ -384,26 +387,29 @@ export default function ClientPortalPage() {
                         setSelectedBank(bank.name);
                         setIsPlaidModalOpen(true);
                       }}
-                      className={`p-3 rounded-xl border text-left flex items-center space-x-3 transition-all cursor-pointer ${
+                      className={`p-3.5 rounded-xl border text-left flex items-center space-x-3 transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
                         selectedBank === bank.name 
-                          ? 'bg-slate-800 border-emerald-500 shadow-md shadow-emerald-500/10' 
-                          : 'bg-slate-950/60 border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80'
+                          ? 'bg-slate-800 border-emerald-500 shadow-lg shadow-emerald-500/20 ring-1 ring-emerald-500' 
+                          : 'bg-slate-950/70 border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80'
                       }`}
                     >
-                      <span className="text-xl">{bank.logo}</span>
-                      <div>
-                        <p className="text-xs font-bold text-slate-200">{bank.name}</p>
-                        <p className="text-[10px] text-emerald-400 font-mono">Connecter ➔</p>
+                      <span className="text-2xl">{bank.logo}</span>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold text-slate-100 truncate">{bank.name}</p>
+                        <p className="text-[10px] text-emerald-400 font-mono flex items-center space-x-1">
+                          <span>Connecter</span>
+                          <span>→</span>
+                        </p>
                       </div>
                     </button>
                   ))}
                 </div>
 
-                <div className="pt-3">
+                <div className="pt-3 flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={() => setIsPlaidModalOpen(true)}
                     disabled={isConnectingPlaid}
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm tracking-wide uppercase transition shadow-xl shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm tracking-wide uppercase transition shadow-xl shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                   >
                     {isConnectingPlaid ? (
                       <>
@@ -413,7 +419,7 @@ export default function ClientPortalPage() {
                     ) : (
                       <>
                         <Lock className="w-4 h-4 stroke-[2.5]" />
-                        <span>Ouvrir la Fenêtre Plaid & Connecter {selectedBank}</span>
+                        <span>Ouvrir l'iframe Plaid Link & Connecter {selectedBank}</span>
                         <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                       </>
                     )}
@@ -423,39 +429,48 @@ export default function ClientPortalPage() {
             ) : (
               /* Verified Plaid Underwriting Dashboard */
               <div className="bg-slate-950 rounded-xl border border-emerald-500/30 p-5 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-800 gap-3">
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-xs font-mono text-emerald-400 uppercase">Verified Account Summary</p>
+                      <p className="text-xs font-mono text-emerald-400 uppercase">Compte Commercial Connecté & Vérifié</p>
                       <p className="text-base font-bold text-white">{deal?.plaidData?.institution || selectedBank} (****9182)</p>
                     </div>
                   </div>
-                  <div className="text-right font-mono">
-                    <p className="text-[10px] text-slate-400 uppercase">Current Operating Balance</p>
-                    <p className="text-base font-bold text-emerald-400">${(deal?.plaidData?.currentBalance || 28450).toLocaleString()} CAD</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="text-right font-mono">
+                      <p className="text-[10px] text-slate-400 uppercase">Solde d'Opération Vérifié</p>
+                      <p className="text-base font-bold text-emerald-400">${(deal?.plaidData?.currentBalance || 28450).toLocaleString()} CAD</p>
+                    </div>
+                    <button
+                      onClick={() => setIsPlaidModalOpen(true)}
+                      className="px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-mono text-slate-200 transition cursor-pointer flex items-center space-x-1.5"
+                      title="Relancer le sélecteur bancaire Plaid"
+                    >
+                      <span>🔄 Changer / Reconnecter</span>
+                    </button>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                    <p className="text-[10px] font-mono text-slate-400 uppercase">Avg Monthly Deposits</p>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase">Dépôts Mensuels Moyens</p>
                     <p className="text-base font-black text-white font-mono">$58,200 <span className="text-xs font-normal text-slate-400">/mo</span></p>
-                    <p className="text-[10px] text-emerald-400 mt-0.5">✓ Passed Tier-1 Threshold</p>
+                    <p className="text-[10px] text-emerald-400 mt-0.5">✓ Seuil Tier-A validé</p>
                   </div>
 
                   <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                    <p className="text-[10px] font-mono text-slate-400 uppercase">NSF / Return Checks (90d)</p>
-                    <p className="text-base font-black text-emerald-400 font-mono">0 NSFs</p>
-                    <p className="text-[10px] text-emerald-400 mt-0.5">✓ Clean Cash Flow Record</p>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase">NSF / Chèques sans provision (90j)</p>
+                    <p className="text-base font-black text-emerald-400 font-mono">0 NSF</p>
+                    <p className="text-[10px] text-emerald-400 mt-0.5">✓ Historique Cash-Flow Clean</p>
                   </div>
 
                   <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                    <p className="text-[10px] font-mono text-slate-400 uppercase">Pre-Approved Capital</p>
-                    <p className="text-base font-black text-emerald-400 font-mono">${(deal?.amountRequested || 65000).toLocaleString()}</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Ready for final term sheet</p>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase">Capital Pré-Approuvé</p>
+                    <p className="text-base font-black text-emerald-400 font-mono">${(deal?.amountRequested || 65000).toLocaleString()} CAD</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Prêt pour term sheet final</p>
                   </div>
                 </div>
               </div>

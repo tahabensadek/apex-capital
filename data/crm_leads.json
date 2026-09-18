@@ -9,62 +9,17 @@
     "amountRequested": 65000,
     "monthlyRevenue": 55000,
     "useOfFunds": "Working Capital & Inventory Bridge",
-    "stage": 3,
-    "status": "UNDERWRITING_REVIEW",
+    "stage": 1,
+    "status": "AWAITING_BANK_CONNECT",
     "mandateSigned": false,
-    "plaidConnected": true,
+    "plaidConnected": false,
     "documents": [],
     "createdAt": "2026-09-17T16:39:57.770Z",
     "accountExec": {
       "name": "Apex Capital Desk",
       "phone": "+1 (514) 800-APEX",
       "email": "partners@bccfund.com"
-    },
-    "plaidData": {
-      "institution": "TD Canada Trust",
-      "accountNumber": "****9182",
-      "currentBalance": 113902,
-      "verifiedAt": "2026-09-17T16:42:15.049Z"
-    },
-    "underwriting": {
-      "decision": "APPROVED_TIER_A",
-      "headline": "APPROBATION IMMÉDIATE FAST-TRACK 24H (TIER A / GOLDEN FILE)",
-      "businessName": "Apex Contractor Inc",
-      "institution": "TD Canada Trust",
-      "metrics": {
-        "monthlyGrossRevenue": 106436,
-        "avgDailyBalance": 75972,
-        "nsfCount90Days": 0,
-        "negativeBalanceDays": 0,
-        "existingMcaDetected": [],
-        "netMonthlyCashFlow": 29801
-      },
-      "loanOffers": {
-        "conservative": 72000,
-        "recommended": 96000,
-        "aggressive": 120000
-      },
-      "terms": {
-        "termMonths": 10,
-        "estimatedFactorRate": 1.18,
-        "estimatedDailyPayment": 539.43,
-        "estimatedWeeklyPayment": 2616.17
-      },
-      "apexCommissions": {
-        "clientMandate5Percent": 4800,
-        "lenderCommission1_5Percent": 1440,
-        "totalGrossSpread": 6240
-      },
-      "riskFlags": [],
-      "strengths": [
-        "0 Stacking MCA détecté — 1ère position exclusive.",
-        "Solde de clôture quotidien solide (75,972 $ CAD).",
-        "0 NSF sur 90 jours (Historique bancaire propre)."
-      ],
-      "readyForMerchantGrowth": true
-    },
-    "offerAcceptedAt": "2026-09-17T16:41:53.078Z",
-    "updatedAt": "2026-09-17T16:41:53.130Z"
+    }
   },
   {
     "id": "APX-901",
