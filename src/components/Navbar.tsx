@@ -37,19 +37,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, lang, setLang }) =
           <span>{lang === "fr" ? "Souscription Directe 24H Active" : "24H Direct Underwriting Active"}</span>
         </div>
 
-        {/* Navigation Links */}
-        <div className="hidden lg:flex items-center space-x-6 text-xs font-semibold text-slate-300">
-          <a href="/financials" className="text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1.5 font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span>Financial Model</span>
+        {/* Client Navigation Links */}
+        <nav className="hidden lg:flex items-center space-x-6 text-xs font-semibold text-slate-300">
+          <a href="#solutions" className="hover:text-emerald-400 transition-colors">
+            {lang === "fr" ? "Solutions de Crédit" : "Credit Solutions"}
           </a>
-          <a href="/crm" className="hover:text-white transition-colors">
-            Trading CRM
+          <a href="#how-it-works" className="hover:text-emerald-400 transition-colors">
+            {lang === "fr" ? "Processus 24H" : "24H Process"}
           </a>
-          <a href="/board" className="hover:text-white transition-colors">
-            War Room
+          <a href="#apply-wizard" className="hover:text-emerald-400 transition-colors">
+            {lang === "fr" ? "Calculateur d'Admissibilité" : "Eligibility Calculator"}
           </a>
-        </div>
+        </nav>
 
         {/* Action Controls */}
         <div className="flex items-center gap-3">
