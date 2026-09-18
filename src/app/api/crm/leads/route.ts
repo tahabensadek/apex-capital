@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export interface CRMLead {
   id: string;
   businessName: string;
@@ -144,7 +147,13 @@ export async function GET() {
       fs.writeFileSync(filePath, JSON.stringify(leads, null, 2), 'utf-8');
     }
 
-    return NextResponse.json({ success: true, leads });
+    return NextResponse.json({ success: true, leads }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

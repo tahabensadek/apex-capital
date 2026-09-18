@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const DATA_DIR = path.join(process.cwd(), 'data');
 const CRM_FILE = path.join(DATA_DIR, 'crm_leads.json');
 
@@ -54,7 +57,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ deal
     saveDeals(deals);
   }
 
-  return NextResponse.json({ deal });
+  return NextResponse.json({ deal }, {
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    }
+  });
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ dealId: string }> }) {

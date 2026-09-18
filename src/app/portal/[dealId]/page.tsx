@@ -40,6 +40,9 @@ const CANADIAN_BANKS = [
   { id: 'nbc', name: 'National Bank', logo: '⚡', color: 'from-red-500 to-red-700' },
 ];
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function ClientPortalPage({ params }: { params: Promise<{ dealId: string }> }) {
   const resolvedParams = use(params);
   const dealId = resolvedParams.dealId;
@@ -58,7 +61,10 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
   const [offerAccepted, setOfferAccepted] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`/api/deals/${dealId}`)
+    fetch(`/api/deals/${dealId}?t=${Date.now()}`, { 
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache' }
+    })
       .then(r => r.json())
       .then(data => {
         if (data.deal) {
