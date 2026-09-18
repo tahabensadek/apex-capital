@@ -6,6 +6,7 @@ import {
   FileText, Upload, Lock, Sparkles, Phone, Mail, Check, CreditCard, ChevronRight, Zap
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { PlaidLinkModal } from "@/components/PlaidLinkModal";
 
 interface DealData {
   id: string;
@@ -46,6 +47,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
   const [deal, setDeal] = useState<DealData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedBank, setSelectedBank] = useState<string>('RBC Royal Bank');
+  const [isPlaidModalOpen, setIsPlaidModalOpen] = useState<boolean>(false);
   const [isConnectingPlaid, setIsConnectingPlaid] = useState<boolean>(false);
   const [plaidSuccess, setPlaidSuccess] = useState<boolean>(false);
   const [mandateName, setMandateName] = useState<string>("");
@@ -70,17 +72,18 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
       .catch(() => setLoading(false));
   }, [dealId]);
 
-  const handlePlaidConnect = async () => {
+  const handlePlaidModalSuccess = async (bankInfo: { institution: string; accountNumber: string; balance: number }) => {
+    setIsPlaidModalOpen(false);
     setIsConnectingPlaid(true);
+    setSelectedBank(bankInfo.institution);
     try {
-      // Trigger API exchange
       const res = await fetch('/api/plaid/exchange-public-token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           public_token: 'link-sandbox-apex-mock-' + Date.now(),
           dealId: dealId,
-          institution: selectedBank,
+          institution: bankInfo.institution,
           businessName: deal?.companyName || 'Apex Client Corp'
         })
       });
@@ -97,8 +100,8 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
         } : null);
 
         confetti({
-          particleCount: 80,
-          spread: 70,
+          particleCount: 100,
+          spread: 80,
           origin: { y: 0.6 }
         });
       }
@@ -373,17 +376,20 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
                   {CANADIAN_BANKS.map(bank => (
                     <button
                       key={bank.id}
-                      onClick={() => setSelectedBank(bank.name)}
-                      className={`p-3 rounded-xl border text-left flex items-center space-x-3 transition-all ${
+                      onClick={() => {
+                        setSelectedBank(bank.name);
+                        setIsPlaidModalOpen(true);
+                      }}
+                      className={`p-3 rounded-xl border text-left flex items-center space-x-3 transition-all cursor-pointer ${
                         selectedBank === bank.name 
                           ? 'bg-slate-800 border-emerald-500 shadow-md shadow-emerald-500/10' 
-                          : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                          : 'bg-slate-950/60 border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80'
                       }`}
                     >
                       <span className="text-xl">{bank.logo}</span>
                       <div>
                         <p className="text-xs font-bold text-slate-200">{bank.name}</p>
-                        <p className="text-[10px] text-slate-400 font-mono">Commercial Bank</p>
+                        <p className="text-[10px] text-emerald-400 font-mono">Connecter ➔</p>
                       </div>
                     </button>
                   ))}
@@ -391,19 +397,19 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
 
                 <div className="pt-3">
                   <button
-                    onClick={handlePlaidConnect}
+                    onClick={() => setIsPlaidModalOpen(true)}
                     disabled={isConnectingPlaid}
                     className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black text-sm tracking-wide uppercase transition shadow-xl shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer disabled:opacity-50"
                   >
                     {isConnectingPlaid ? (
                       <>
                         <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                        <span>Connecting via Plaid 256-bit API...</span>
+                        <span>Analyse des 90 jours de relevés en cours...</span>
                       </>
                     ) : (
                       <>
                         <Lock className="w-4 h-4 stroke-[2.5]" />
-                        <span>Connect {selectedBank} & Fast-Track Approval</span>
+                        <span>Ouvrir la Fenêtre Plaid & Connecter {selectedBank}</span>
                         <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                       </>
                     )}
@@ -648,6 +654,14 @@ export default function ClientPortalPage({ params }: { params: Promise<{ dealId:
             )}
           </div>
         )}
+
+        {/* Interactive Plaid Link Modal Popup */}
+        <PlaidLinkModal
+          isOpen={isPlaidModalOpen}
+          onClose={() => setIsPlaidModalOpen(false)}
+          onSuccess={handlePlaidModalSuccess}
+          businessName={deal?.companyName}
+        />
 
       </main>
     </div>
