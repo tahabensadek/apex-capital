@@ -1,0 +1,14 @@
+
+> apex-capital@0.1.0 dev
+> next dev -p 3000
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.5.31:3000
+- Environments: .env.local
+✓ Ready in 896ms
+✓ Running next.config.ts took 697ms
+
+○ Compiling /board ...
+ HEAD /board 200 in 2.2s (next.js: 1640ms, application-code: 598ms)
+ HEAD /board 200 in 5.2s (next.js: 4.7s, application-code: 553ms)

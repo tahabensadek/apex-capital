@@ -8,21 +8,9 @@
     "status": "COMPLETED",
     "completedAt": "2026-09-17T11:55:00.000Z",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Contact direct avec Amir établi",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Validation du courriel de soumission: partners@bccfund.com",
-        "done": true
-      },
-      {
-        "id": "c3",
-        "text": "Critères d'admissibilité verrouillés",
-        "done": true
-      }
+      { "id": "c1", "text": "Contact direct avec Amir établi", "done": true },
+      { "id": "c2", "text": "Validation du courriel de soumission: partners@bccfund.com", "done": true },
+      { "id": "c3", "text": "Critères d'admissibilité verrouillés", "done": true }
     ]
   },
   {
@@ -34,193 +22,170 @@
     "status": "COMPLETED",
     "completedAt": "2026-09-17T12:41:00.000Z",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Règle 20k$/mois et max 2 NSF codée",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Calcul automatique des offres Tier A / Tier B",
-        "done": true
-      },
-      {
-        "id": "c3",
-        "text": "Intégration Plaid REST API",
-        "done": true
-      }
+      { "id": "c1", "text": "Règle 20k$/mois et max 2 NSF codée", "done": true },
+      { "id": "c2", "text": "Calcul automatique des offres Tier A / Tier B", "done": true },
+      { "id": "c3", "text": "Intégration Plaid REST API", "done": true }
     ]
   },
   {
     "id": "task-3",
     "title": "Portail Client Interactif 5-Étapes (/portal)",
-    "description": "Portail client mobile avec Domino's Pizza Tracker, connexion bancaire Plaid 256-bit et E-signature du mandat 7.5%.",
+    "description": "Portail client mobile avec Pizza Tracker, connexion bancaire Plaid 256-bit et E-signature du mandat 7.0%.",
     "category": "TECH",
     "priority": "HIGH",
     "status": "COMPLETED",
     "completedAt": "2026-09-17T12:37:00.000Z",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Sélecteur de banques canadiennes (RBC, TD, BMO, Desjardins, etc.)",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Signature légale du mandat de courtage",
-        "done": true
-      },
-      {
-        "id": "c3",
-        "text": "Zone de dépôt sécurisée pour pièce d'identité et spécimen de chèque",
-        "done": true
-      }
+      { "id": "c1", "text": "Sélecteur de banques canadiennes (RBC, TD, BMO, Desjardins, etc.)", "done": true },
+      { "id": "c2", "text": "Signature légale du mandat de courtage", "done": true },
+      { "id": "c3", "text": "Zone de dépôt sécurisée pour pièce d'identité et spécimen de chèque", "done": true }
     ]
   },
   {
     "id": "task-4",
-    "title": "Dépôt GitHub Public du Projet (Open/Source Control)",
-    "description": "Publier le repository complet apex-capital sur GitHub avec documentation d'architecture.",
+    "title": "Dépôt GitHub & Déploiement Vercel Production",
+    "description": "Application Next.js déployée sur Vercel avec CI/CD et headers dynamiques no-cache.",
     "category": "INFRA",
     "priority": "HIGH",
     "status": "COMPLETED",
+    "completedAt": "2026-09-17T19:17:05.213Z",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Code complet commité sur la branche main",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Connexion GitHub CLI ou Remote URL",
-        "done": true
-      },
-      {
-        "id": "c3",
-        "text": "Push initial du repo public",
-        "done": true
-      }
-    ],
-    "completedAt": "2026-09-17T19:17:05.213Z"
+      { "id": "c1", "text": "Code complet commité sur la branche main", "done": true },
+      { "id": "c2", "text": "Déploiement live sur apex-capital-six.vercel.app", "done": true },
+      { "id": "c3", "text": "Nettoyage des liens d'admin sur la navbar publique", "done": true }
+    ]
   },
   {
     "id": "task-5",
-    "title": "Configuration Adresse Siège & Bureau Virtuel Regus",
-    "description": "Sécuriser l'adresse d'autorité institutionnelle au 9160 Boul. Leduc Suite 410 (DIX30) pour le footer, contrat et Google Business.",
-    "category": "LEGAL",
+    "title": "Modèle Financier Comptable & Calibrage 7.0%",
+    "description": "Simulateur de revenus prévisionnels calibré sur 1.7M$ de volume financé avec commissions 7.0% et frais de dossier.",
+    "category": "CAPITAL",
     "priority": "HIGH",
-    "status": "TODO",
+    "status": "COMPLETED",
+    "completedAt": "2026-09-17T17:58:00.000Z",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Activation boîte postale / domiciliation Regus DIX30",
-        "done": false
-      },
-      {
-        "id": "c2",
-        "text": "Mise à jour du footer et contrat légal",
-        "done": false
-      },
-      {
-        "id": "c3",
-        "text": "Création fiche Google Business vérifiée",
-        "done": false
-      }
+      { "id": "c1", "text": "Modèle Excel & ODS généré", "done": true },
+      { "id": "c2", "text": "Page interactive /financials déployée", "done": true },
+      { "id": "c3", "text": "Barème de commission verrouillé à 7.0%", "done": true }
     ]
   },
   {
     "id": "task-6",
-    "title": "Lancement Campagne Google Ads 'Entrepreneurs & Bridge Financing'",
-    "description": "Déployer la campagne ciblée sur les entrepreneurs généraux, mécanique et fabrication industrielle avec mots-clés négatifs stricts.",
-    "category": "MARKETING",
+    "title": "Enregistrement & Validation Entité Québec Inc (NEQ)",
+    "description": "Validation de la personne morale distincte au Registraire des entreprises (REQ) pour l'isolation juridique et Google Ads.",
+    "category": "LEGAL",
     "priority": "CRITICAL",
-    "status": "TODO",
+    "status": "IN_PROGRESS",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Liste de mots-clés d'intention commerciale prêts",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Exclusion stricte Camionnage & Vente Autos",
-        "done": true
-      },
-      {
-        "id": "c3",
-        "text": "Configuration budget initial ($100-$150/jour)",
-        "done": false
-      },
-      {
-        "id": "c4",
-        "text": "Activation via Google Ads MCP",
-        "done": false
-      }
+      { "id": "c1", "text": "Extraction du Certificat de constitution / État de renseignements REQ", "done": false },
+      { "id": "c2", "text": "Vérification de la concordance de l'adresse du siège social", "done": false },
+      { "id": "c3", "text": "Nomination des administrateurs et documents d'identité prêts", "done": false }
     ]
   },
   {
     "id": "task-7",
-    "title": "Tunnel & Déploiement Cloudflare Dédié pour Apex Finance",
-    "description": "Lier un domaine officiel (ex. apexcapital.ca ou apexfinance.ca) avec tunnel Cloudflare permanent sans redémarrage.",
-    "category": "INFRA",
-    "priority": "MEDIUM",
-    "status": "TODO",
+    "title": "Ouverture Compte Bancaire Commercial & Carte Corporative",
+    "description": "Compte bancaire entreprise (Desjardins / BMO / TD / RBC / Wise) pour facturation Google Ads et encaissement commissions.",
+    "category": "CAPITAL",
+    "priority": "CRITICAL",
+    "status": "IN_PROGRESS",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Liaison du port 3000 au domaine public",
-        "done": false
-      },
-      {
-        "id": "c2",
-        "text": "Configuration SSL automatique",
-        "done": false
-      }
+      { "id": "c1", "text": "Ouverture compte chèque entreprise au nom exact de l'Inc", "done": false },
+      { "id": "c2", "text": "Émission d'une carte de crédit d'entreprise dédiée à la publicité", "done": false },
+      { "id": "c3", "text": "Téléchargement du spécimen de chèque officiel", "done": false }
     ]
   },
   {
     "id": "task-8",
-    "title": "Protocole de Prélèvement Automatique (PAD / EFT Canada)",
-    "description": "Intégrer le formulaire de prélèvement automatique autorisé (PAD) dans le portail pour débit direct des 7.5% de commission dès décaissement.",
-    "category": "LEGAL",
+    "title": "Google Workspace & Domiciliation Institutionnelle",
+    "description": "Configuration du domaine d'autorité, emails professionnels et adresse physique crédible.",
+    "category": "INFRA",
     "priority": "HIGH",
-    "status": "TODO",
+    "status": "IN_PROGRESS",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Clause PAD insérée dans le mandat numérique",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Passerelle de prélèvement EFT configurée",
-        "done": false
-      }
+      { "id": "c1", "text": "Achat du domaine officiel (.ca ou .com)", "done": false },
+      { "id": "c2", "text": "Création Google Workspace (contact@ / souscription@)", "done": false },
+      { "id": "c3", "text": "Configuration SPF, DKIM et DMARC pour 100% de délivrabilité email", "done": false },
+      { "id": "c4", "text": "Adresse d'affaires d'autorité au footer (ex: Dix30)", "done": false }
     ]
   },
   {
     "id": "task-9",
-    "title": "Premier Dossier Emprunteur Test à Amir",
+    "title": "Vérification Annonceur Organisation Google Ads (KYC)",
+    "description": "Soumettre le profil entreprise pour débloquer l'autorisation financière et éviter tout risque de suspension individuelle.",
+    "category": "MARKETING",
+    "priority": "CRITICAL",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Création du compte Google Ads sous l'email Workspace corporate", "done": false },
+      { "id": "c2", "text": "Soumission de l'État de renseignements REQ (NEQ) + ID Administrateur", "done": false },
+      { "id": "c3", "text": "Liaison du mode de paiement corporatif (Carte d'entreprise)", "done": false },
+      { "id": "c4", "text": "Validation de la politique de confidentialité (Loi 25 Québec) sur la landing page", "done": false }
+    ]
+  },
+  {
+    "id": "task-10",
+    "title": "Lancement Campagne Google Ads 'Prêt Entreprise Québec 24H'",
+    "description": "Activer la campagne de recherche ciblée sur les secteurs à fort cashflow (Construction, Industrie, Services pros).",
+    "category": "MARKETING",
+    "priority": "CRITICAL",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Mots-clés intention haute: 'prêt commercial rapide', 'marge de crédit entreprise québec', 'financement équipement'", "done": true },
+      { "id": "c2", "text": "Liste négative stricte: camionnage, vente auto, consolidation personnelle, crypto, subventions", "done": true },
+      { "id": "c3", "text": "Configuration du budget initial (75$-125$/jour)", "done": false },
+      { "id": "c4", "text": "Tracking des conversions Google Tag / Plaid Link réussi", "done": false }
+    ]
+  },
+  {
+    "id": "task-11",
+    "title": "Protocole de Prélèvement Automatique (PAD / EFT Canada)",
+    "description": "Intégrer le mandat de débit préautorisé pour prélever automatiquement les 7.0% de commission dès décaissement du fonds.",
+    "category": "LEGAL",
+    "priority": "HIGH",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Clause PAD légale insérée dans le contrat numérique /portal", "done": true },
+      { "id": "c2", "text": "Passerelle de prélèvement EFT / Rotissa / Plooto configurée", "done": false },
+      { "id": "c3", "text": "Procédure de confirmation de virement bancaire prête", "done": false }
+    ]
+  },
+  {
+    "id": "task-12",
+    "title": "Desk de Soumission Secrétaire & Deuxième Prêteur Privé",
+    "description": "Établir un deuxième bailleur de fonds alternatif pour recycler les refus de Buy-Box Amir (Tier C / D).",
+    "category": "CAPITAL",
+    "priority": "MEDIUM",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Identifier un 2e prêteur d'affacturage / MCA sans exclusion sectorielle", "done": false },
+      { "id": "c2", "text": "Configurer le routage conditionnel dans le CRM Trading Desk", "done": false }
+    ]
+  },
+  {
+    "id": "task-13",
+    "title": "Alertes SMS / Notifications Instantanées Leads Entrants",
+    "description": "Recevoir un SMS / notification push sur mobile à chaque fois qu'un emprunteur dépose ses états de compte ou soumet un lead.",
+    "category": "TECH",
+    "priority": "HIGH",
+    "status": "TODO",
+    "checklist": [
+      { "id": "c1", "text": "Webhook sur l'API /api/lead vers Twilio ou Telegram Bot", "done": false },
+      { "id": "c2", "text": "Alerte instantanée quand un Plaid Link est complété", "done": false },
+      { "id": "c3", "text": "Relance automatique SMS après 1h si dossier bancaire non connecté", "done": false }
+    ]
+  },
+  {
+    "id": "task-14",
+    "title": "Premier Dossier Emprunteur Test à Amir (BCC Fund)",
     "description": "Simuler et soumettre un premier dossier complet à partners@bccfund.com pour valider le temps de réponse < 4h.",
     "category": "CAPITAL",
     "priority": "CRITICAL",
     "status": "TESTING",
     "checklist": [
-      {
-        "id": "c1",
-        "text": "Package PDF généré avec relevés 12 mois + Flinks",
-        "done": true
-      },
-      {
-        "id": "c2",
-        "text": "Envoi du courriel officiel de soumission",
-        "done": false
-      },
-      {
-        "id": "c3",
-        "text": "Réception de l'offre formelle BCC Fund",
-        "done": false
-      }
+      { "id": "c1", "text": "Package PDF généré avec relevés 6 mois + synthèse bancaire", "done": true },
+      { "id": "c2", "text": "Envoi du courriel officiel de soumission à Amir", "done": false },
+      { "id": "c3", "text": "Réception de l'offre formelle BCC Fund et calcul commission 7.0%", "done": false }
     ]
   }
 ]
