@@ -36,7 +36,7 @@ export const MandateModal: React.FC<MandateModalProps> = ({ isOpen, onClose, lea
   const formattedAmount = leadData.amount ? `$${leadData.amount.toLocaleString()}` : "$65,000";
   const clientName = leadData.ownerName || "Le Client";
   const businessName = leadData.businessName || "Entreprise Emprunteuse";
-  const feeAmount = leadData.amount ? `$${Math.round(leadData.amount * 0.05).toLocaleString()}` : "$3,250";
+  const feeAmount = leadData.amount ? `$${Math.round(leadData.amount * 0.07).toLocaleString()}` : "$4,550";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
@@ -45,7 +45,7 @@ export const MandateModal: React.FC<MandateModalProps> = ({ isOpen, onClose, lea
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
@@ -60,7 +60,7 @@ export const MandateModal: React.FC<MandateModalProps> = ({ isOpen, onClose, lea
               {lang === "fr" ? "Convention Officielle de Mandat" : "Official Advisory Mandate"}
             </span>
             <h3 className="text-xl font-black text-white">
-              {lang === "fr" ? "Mandat de Courtage Financier Exclusif (5%)" : "Exclusive Brokerage Mandate (5%)"}
+              {lang === "fr" ? "Mandat de Courtage Financier Exclusif (7.0%)" : "Exclusive Brokerage Mandate (7.0%)"}
             </h3>
           </div>
         </div>
@@ -83,7 +83,7 @@ export const MandateModal: React.FC<MandateModalProps> = ({ isOpen, onClose, lea
                 <span className="font-extrabold text-white">{formattedAmount}</span>
               </div>
               <div className="flex justify-between border-t border-slate-800 pt-2">
-                <span className="text-slate-400">{lang === "fr" ? "Honoraires de Succès (5.00%) :" : "Performance Fee (5.00%):"}</span>
+                <span className="text-slate-400">{lang === "fr" ? "Honoraires de Succès (7.00%) :" : "Performance Fee (7.00%):"}</span>
                 <span className="font-black text-emerald-400">
                   {feeAmount} {lang === "fr" ? "(Déduit du déboursement)" : "(Deducted at closing wire)"}
                 </span>
@@ -106,8 +106,8 @@ export const MandateModal: React.FC<MandateModalProps> = ({ isOpen, onClose, lea
               <p>
                 <strong className="text-slate-200">2. {lang === "fr" ? "Structure de Rémunération (100% au Succès) :" : "Success-Only Fee Structure:"}</strong>{" "}
                 {lang === "fr"
-                  ? "Aucun frais d'ouverture de dossier ni avance n'est exigible. Les honoraires de 5.00% sont strictement exigibles lors du déboursement effectif des fonds et sont déduits directement à la source par le prêteur sur les montants avancés."
-                  : "Zero upfront fees or retainer costs apply. The 5.00% brokerage fee is strictly earned upon successful loan disbursement and is deducted directly at closing from the gross funding wire."}
+                  ? "Aucun frais d'ouverture de dossier ni avance n'est exigible. Les honoraires de 7.00% sont strictement exigibles lors du déboursement effectif des fonds et sont déduits directement à la source par le prêteur sur les montants avancés."
+                  : "Zero upfront fees or retainer costs apply. The 7.00% brokerage fee is strictly earned upon successful loan disbursement and is deducted directly at closing from the gross funding wire."}
               </p>
 
               <p>

@@ -37,17 +37,17 @@ export async function POST(req: Request) {
 
     const newLead = {
       id: "APEX-" + Date.now().toString(36).toUpperCase(),
-      businessName,
-      ownerName,
-      phone,
-      email,
-      province,
+      businessName: businessName || "Entreprise Commerciale",
+      ownerName: ownerName || "Dirigeant",
+      phone: phone || "+15145550199",
+      email: email || "direction@entreprise.ca",
+      province: province || "QC",
       amount: Number(amount) || 65000,
-      purpose,
-      timeInBusiness,
-      monthlyRevenue,
-      hasFlinksConnected,
-      uploadedFileName,
+      purpose: purpose || "Fonds de roulement",
+      timeInBusiness: timeInBusiness || "1-2 Ans",
+      monthlyRevenue: monthlyRevenue || "$50,000 / mois",
+      hasFlinksConnected: !!hasFlinksConnected,
+      uploadedFileName: uploadedFileName || "",
       status: "NEW_INBOUND_URGENT",
       createdAt: timestamp || new Date().toISOString(),
       merchantGrowthPackage: {
@@ -64,6 +64,41 @@ export async function POST(req: Request) {
 
     leads.unshift(newLead);
     fs.writeFileSync(leadsFile, JSON.stringify(leads, null, 2), "utf-8");
+
+    // Also populate CRM deals for immediate portal access
+    const crmFile = path.join(leadsDir, "crm_leads.json");
+    let crmDeals = [];
+    if (fs.existsSync(crmFile)) {
+      try {
+        crmDeals = JSON.parse(fs.readFileSync(crmFile, "utf-8"));
+      } catch (e) {
+        crmDeals = [];
+      }
+    }
+    const newDeal = {
+      id: newLead.id,
+      dealId: newLead.id,
+      companyName: newLead.businessName,
+      contactName: newLead.ownerName,
+      phone: newLead.phone,
+      email: newLead.email,
+      amountRequested: newLead.amount,
+      monthlyRevenue: typeof monthlyRevenue === 'number' ? monthlyRevenue : 65000,
+      useOfFunds: newLead.purpose,
+      stage: 1,
+      status: 'AWAITING_BANK_CONNECT',
+      mandateSigned: false,
+      plaidConnected: !!hasFlinksConnected,
+      documents: uploadedFileName ? [{ name: uploadedFileName, type: 'Bank Statement PDF', uploadedAt: new Date().toISOString() }] : [],
+      createdAt: new Date().toISOString(),
+      accountExec: {
+        name: 'Taha Bensadek (Direct Desk)',
+        phone: '+1 (514) 800-APEX',
+        email: 'partners@bccfund.com'
+      }
+    };
+    crmDeals.unshift(newDeal);
+    fs.writeFileSync(crmFile, JSON.stringify(crmDeals, null, 2), "utf-8");
 
     const isEnglish = body.lang === "en" || body.province === "AB" || body.province === "ON" || body.province === "BC";
 
