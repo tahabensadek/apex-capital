@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, DollarSign, Clock, Shield, Sparkles, ArrowRight } from "lucide-react";
+import { CheckCircle2, DollarSign, Clock, Shield, Sparkles, ArrowRight, Zap, TrendingUp, Calendar, Building2 } from "lucide-react";
 
 interface LoanCalculatorProps {
   onApplyWithAmount: (amount: number) => void;
@@ -13,68 +13,97 @@ export const LoanCalculator: React.FC<LoanCalculatorProps> = ({ onApplyWithAmoun
   const [termMonths, setTermMonths] = useState<number>(12);
 
   // Approximate metrics based on standard alternative B2B factor (1.18 - 1.22)
-  const factorRate = 1.19;
+  const factorRate = termMonths <= 6 ? 1.16 : termMonths <= 12 ? 1.19 : 1.24;
   const totalRepayment = amount * factorRate;
   const weeklyPayment = Math.round(totalRepayment / (termMonths * 4.33));
   const dailyPayment = Math.round(totalRepayment / (termMonths * 21.5));
+  const estimatedCost = Math.round(totalRepayment - amount);
 
   return (
-    <div className="w-full glass-card rounded-2xl p-6 sm:p-8 border border-white/10 glow-emerald relative overflow-hidden">
-      {/* Background radial glow */}
-      <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div className="w-full glass-card rounded-3xl p-6 sm:p-8 border border-emerald-500/30 glow-emerald relative overflow-hidden backdrop-blur-2xl shadow-2xl">
+      {/* Background radial ambience */}
+      <div className="absolute -right-24 -top-24 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow"></div>
+      <div className="absolute -left-20 -bottom-20 w-60 h-60 bg-teal-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
-      <div className="flex items-center justify-between mb-6">
+      {/* Header with Live Ticker */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-800/80 pb-5">
         <div>
-          <span className="text-xs font-bold text-emerald-400 tracking-wider uppercase flex items-center gap-1.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-black uppercase tracking-wider mb-1.5">
             <Sparkles className="w-3.5 h-3.5" />
-            {lang === "fr" ? "Simulateur de Trésorerie 24H" : "24H Capital Simulator"}
-          </span>
-          <h3 className="text-xl font-bold text-white mt-1">
-            {lang === "fr" ? "Combien votre entreprise a-t-elle besoin ?" : "How much capital do you need?"}
+            <span>{lang === "fr" ? "Simulateur de Trésorerie 24H" : "24H Capital Simulator"}</span>
+          </div>
+          <h3 className="text-xl sm:text-2xl font-black text-white">
+            {lang === "fr" ? "Calculez votre Avance Immédiate" : "Calculate Your Direct Advance"}
           </h3>
         </div>
-        <div className="text-right">
-          <span className="text-xs text-slate-400 block">{lang === "fr" ? "Montant Sélectionné" : "Selected Amount"}</span>
+        <div className="text-left sm:text-right bg-slate-900/90 border border-slate-800 px-4 py-2 rounded-2xl">
+          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">
+            {lang === "fr" ? "Montant Sélectionné" : "Selected Facility"}
+          </span>
           <span className="text-2xl sm:text-3xl font-black text-emerald-400 tracking-tight">
-            ${amount.toLocaleString()}
+            ${amount.toLocaleString()} <span className="text-xs text-slate-400 font-bold">CAD</span>
           </span>
         </div>
       </div>
 
-      {/* Slider */}
-      <div className="space-y-4 mb-8">
-        <div className="relative">
+      {/* Interactive Slider & Quick Preset Chips */}
+      <div className="space-y-5 mb-8">
+        <div>
+          <div className="flex justify-between text-xs font-bold text-slate-400 mb-2">
+            <span>{lang === "fr" ? "Ajustez le curseur :" : "Adjust Amount Slider:"}</span>
+            <span className="text-emerald-400 font-extrabold">{lang === "fr" ? "Déboursement 24H" : "24H Wire Speed"}</span>
+          </div>
           <input
             type="range"
-            min={10000}
-            max={500000}
+            min={15000}
+            max={350000}
             step={5000}
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
-            className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+            className="w-full h-3 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400 focus:outline-none"
           />
-          <div className="flex justify-between text-[11px] text-slate-500 font-semibold mt-2">
-            <span>$10,000</span>
+          <div className="flex justify-between text-[10px] text-slate-500 font-bold mt-2">
+            <span>$15,000</span>
             <span>$100,000</span>
-            <span>$250,000</span>
-            <span>$500,000+</span>
+            <span>$200,000</span>
+            <span>$350,000+</span>
           </div>
         </div>
 
-        {/* Term buttons */}
-        <div className="flex items-center justify-between pt-2">
-          <span className="text-xs text-slate-400 font-medium">
-            {lang === "fr" ? "Durée estimée :" : "Estimated Term:"}
+        {/* Quick Amount Chips */}
+        <div className="grid grid-cols-4 gap-2">
+          {[25000, 50000, 100000, 250000].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              onClick={() => setAmount(preset)}
+              className={`py-2 px-2.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                amount === preset
+                  ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/30"
+                  : "bg-slate-900 border border-slate-800 text-slate-300 hover:border-slate-700 hover:text-white"
+              }`}
+            >
+              ${preset / 1000}k
+            </button>
+          ))}
+        </div>
+
+        {/* Term Selector */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+          <span className="text-xs text-slate-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-emerald-400" />
+            {lang === "fr" ? "Durée de remboursement cible :" : "Target Term:"}
           </span>
-          <div className="flex gap-2">
-            {[6, 12, 18, 24].map((m) => (
+          <div className="grid grid-cols-4 gap-2">
+            {[6, 9, 12, 18].map((m) => (
               <button
                 key={m}
+                type="button"
                 onClick={() => setTermMonths(m)}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
                   termMonths === m
-                    ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20"
-                    : "bg-slate-900 text-slate-400 border border-slate-800 hover:border-slate-700"
+                    ? "bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/25"
+                    : "bg-slate-900 text-slate-400 border border-slate-800 hover:border-slate-700 hover:text-slate-200"
                 }`}
               >
                 {m} {lang === "fr" ? "Mois" : "Mos"}
@@ -84,62 +113,57 @@ export const LoanCalculator: React.FC<LoanCalculatorProps> = ({ onApplyWithAmoun
         </div>
       </div>
 
-      {/* Key Output Metrics */}
+      {/* Key Output Metrics HUD */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-        <div className="bg-slate-900/90 rounded-xl p-3.5 border border-slate-800/80">
-          <span className="text-[11px] text-slate-400 block font-medium">
-            {lang === "fr" ? "Paiement Hebdomadaire" : "Weekly Payment"}
+        <div className="bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80">
+          <span className="text-[10px] text-slate-400 uppercase font-bold block">
+            {lang === "fr" ? "Paiement Hebdo Estimé" : "Est. Weekly Payment"}
           </span>
-          <span className="text-lg font-extrabold text-white mt-0.5 block">
+          <span className="text-lg sm:text-xl font-black text-white mt-1 block">
             ~${weeklyPayment.toLocaleString()}
           </span>
-          <span className="text-[10px] text-emerald-400 font-medium">{lang === "fr" ? "Débit direct PAD" : "Direct bank PAD"}</span>
+          <span className="text-[10px] text-emerald-400 font-medium">{lang === "fr" ? "Prélèvement PAD" : "Direct PAD"}</span>
         </div>
 
-        <div className="bg-slate-900/90 rounded-xl p-3.5 border border-slate-800/80">
-          <span className="text-[11px] text-slate-400 block font-medium">
-            {lang === "fr" ? "Délai de Déboursement" : "Funding Speed"}
+        <div className="bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80">
+          <span className="text-[10px] text-slate-400 uppercase font-bold block">
+            {lang === "fr" ? "Paiement Quotidien" : "Est. Daily Payment"}
           </span>
-          <span className="text-lg font-extrabold text-emerald-300 mt-0.5 block">
-            24 Heures
+          <span className="text-lg sm:text-xl font-black text-white mt-1 block">
+            ~${dailyPayment.toLocaleString()}
           </span>
-          <span className="text-[10px] text-slate-500">{lang === "fr" ? "Virement direct" : "Direct wire"}</span>
+          <span className="text-[10px] text-slate-400 font-medium">{lang === "fr" ? "Jours ouvrables (Lun-Ven)" : "Business days only"}</span>
         </div>
 
-        <div className="col-span-2 sm:col-span-1 bg-slate-900/90 rounded-xl p-3.5 border border-slate-800/80">
-          <span className="text-[11px] text-slate-400 block font-medium">
-            {lang === "fr" ? "Garantie Personnelle" : "Collateral"}
+        <div className="col-span-2 sm:col-span-1 bg-slate-900/90 rounded-2xl p-4 border border-slate-800/80">
+          <span className="text-[10px] text-slate-400 uppercase font-bold block">
+            {lang === "fr" ? "Décaissement Net" : "Net Wire Target"}
           </span>
-          <span className="text-lg font-extrabold text-white mt-0.5 block">
-            {lang === "fr" ? "Aucune (100% Non Garanti)" : "None (100% Unsecured)"}
+          <span className="text-lg sm:text-xl font-black text-emerald-400 mt-1 block">
+            ${amount.toLocaleString()}
           </span>
-          <span className="text-[10px] text-slate-500">{lang === "fr" ? "Basé sur vos dépôts" : "Cash flow backed"}</span>
+          <span className="text-[10px] text-emerald-300 font-medium">{lang === "fr" ? "100% Non garanti" : "100% Unsecured"}</span>
         </div>
       </div>
 
-      {/* Fast Action CTA */}
+      {/* Trust Line */}
+      <div className="flex items-center justify-between text-[11px] text-slate-400 bg-slate-950/70 border border-slate-800/80 rounded-2xl px-4 py-2.5 mb-6">
+        <div className="flex items-center gap-1.5">
+          <Shield className="w-3.5 h-3.5 text-emerald-400" />
+          <span>{lang === "fr" ? "0$ d'avance • Rémunération 100% au succès" : "$0 Upfront • 100% Performance Success"}</span>
+        </div>
+        <span className="text-emerald-400 font-black">24H Wire</span>
+      </div>
+
+      {/* CTA Button */}
       <button
+        type="button"
         onClick={() => onApplyWithAmount(amount)}
-        className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/25 transition-all active:scale-98"
+        className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm tracking-wider uppercase flex items-center justify-center gap-2 shadow-xl shadow-emerald-500/30 transition-all active:scale-98 cursor-pointer"
       >
-        <span>
-          {lang === "fr"
-            ? `Vérifier mon admissibilité pour $${amount.toLocaleString()}`
-            : `Lock in $${amount.toLocaleString()} Pre-Approval`}
-        </span>
+        <span>{lang === "fr" ? `Sécuriser mon $${amount.toLocaleString()} en 24H` : `Fund My $${amount.toLocaleString()} in 24H`}</span>
         <ArrowRight className="w-4 h-4" />
       </button>
-
-      <div className="flex items-center justify-center gap-4 mt-4 text-[11px] text-slate-400">
-        <span className="flex items-center gap-1">
-          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-          {lang === "fr" ? "Sans impact sur la cote de crédit" : "No impact on credit score"}
-        </span>
-        <span className="flex items-center gap-1">
-          <Shield className="w-3.5 h-3.5 text-emerald-400" />
-          {lang === "fr" ? "Cryptage bancaire 256-bit" : "Bank-level 256-bit encryption"}
-        </span>
-      </div>
     </div>
   );
 };

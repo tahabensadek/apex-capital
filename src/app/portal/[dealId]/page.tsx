@@ -484,16 +484,16 @@ export default function ClientPortalPage() {
             <div>
               <h3 className="text-lg font-bold text-white flex items-center space-x-2">
                 <span>Apex Capital Brokerage Success Mandate</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/20 text-blue-400 border border-blue-500/30">LEGAL LOCK</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">LEGAL LOCK</span>
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Zero upfront fees. Apex Capital acts as your exclusive commercial finance advisor. Our success fee (7.5%) is payable only upon actual fund disbursement to your account.
+                Zero upfront fees. Apex Capital acts as your exclusive commercial finance advisor. Our success fee (7.0%) is payable only upon actual fund disbursement to your account.
               </p>
             </div>
 
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 max-h-44 overflow-y-auto text-xs text-slate-400 font-mono space-y-2 leading-relaxed">
               <p><strong className="text-slate-200">1. SCOPE OF SERVICES:</strong> Apex Capital Inc. agrees to package, underwrite, and submit Client&apos;s financing file to accredited commercial funding institutions (including BCC Fund and institutional syndicates).</p>
-              <p><strong className="text-slate-200">2. CONTINGENT SUCCESS FEE:</strong> Client agrees to pay Apex Capital a success fee equal to 7.5% of the total gross capital disbursed, payable via EFT, Wire, or Interac within 24 hours of funds clearing Client&apos;s account.</p>
+              <p><strong className="text-slate-200">2. CONTINGENT SUCCESS FEE:</strong> Client agrees to pay Apex Capital a success fee equal to 7.0% of the total gross capital disbursed, payable via direct lender deduction or EFT within 24 hours of funds clearing Client&apos;s account.</p>
               <p><strong className="text-slate-200">3. NO UPFRONT FEES:</strong> If no funding is obtained or accepted, Client owes exactly $0.00.</p>
             </div>
 

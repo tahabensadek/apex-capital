@@ -9,6 +9,8 @@ import { ObjectionSection } from "@/components/ObjectionSection";
 import { Testimonials } from "@/components/Testimonials";
 import { MandateModal } from "@/components/MandateModal";
 import { Footer } from "@/components/Footer";
+import { StickyMobileBar } from "@/components/StickyMobileBar";
+import { LiveFundingTicker } from "@/components/LiveFundingTicker";
 
 export default function Home() {
   const [lang, setLang] = useState<"fr" | "en">("fr");
@@ -33,7 +35,7 @@ export default function Home() {
   const scrollToWizard = () => {
     const el = document.getElementById("apply-wizard");
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -84,6 +86,12 @@ export default function Home() {
 
       {/* Institutional Compliance Footer */}
       <Footer lang={lang} />
+
+      {/* Live Social Proof Deals Ticker */}
+      <LiveFundingTicker lang={lang} />
+
+      {/* Sticky Mobile Conversion Action Bar */}
+      <StickyMobileBar onApplyClick={scrollToWizard} lang={lang} />
 
       {/* 1-Click Mandate E-Signature Modal */}
       <MandateModal

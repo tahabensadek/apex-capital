@@ -221,7 +221,7 @@ export default function FinancialModelPage() {
             </h1>
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">
               Calibrated on real Canadian B2B merchant bridge lending: <span className="text-slate-200 font-semibold">10 to 18 funded deals/month</span> ($550k–$1.0M/mo volume), 
-              realistic CAC growth curve ($1,000 → $1,250), and direct 8.0% mandate fee collection via PAD.
+              realistic CAC growth curve ($1,000 → $1,250), and direct 7.0% mandate fee collection via PAD.
             </p>
           </div>
 
@@ -272,7 +272,7 @@ export default function FinancialModelPage() {
               ${Math.round(sixMonthSchedule.cumRevenue).toLocaleString()}
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              8.0% Mandate fee collected upon wire
+              7.0% Mandate fee collected upon wire
             </div>
           </div>
 
