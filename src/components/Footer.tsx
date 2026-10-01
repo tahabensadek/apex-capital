@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Shield, Lock, Zap, PhoneCall, Mail, MapPin } from "lucide-react";
+import { Lock, Zap, PhoneCall, Mail, MapPin, Clock } from "lucide-react";
+import { BRAND, disclosure } from "@/lib/brand";
 
 interface FooterProps {
   lang: "fr" | "en";
@@ -9,11 +10,11 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ lang }) => {
   return (
-    <footer className="bg-slate-950 border-t border-slate-900 pt-16 pb-12 text-slate-400 text-xs">
+    <footer className="bg-slate-950 border-t border-slate-900 pt-16 pb-28 md:pb-12 text-slate-400 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+
           {/* Col 1: Brand */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -21,64 +22,55 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
                 <Zap className="w-4 h-4" />
               </div>
               <span className="text-base font-black tracking-tight text-white">
-                APEX <span className="text-emerald-400 font-light">CAPITAL</span>
+                Capital<span className="text-emerald-400 font-light">Facile</span>
               </span>
             </div>
             <p className="text-slate-400 text-xs leading-relaxed">
               {lang === "fr"
-                ? "Bureau de courtage et d'origination financière commerciale pour les PME et travailleurs autonomes à travers le Canada."
-                : "Commercial financial advisory and loan origination desk serving small-to-medium Canadian enterprises nationwide."}
+                ? "Nous aidons les PME québécoises refusées par la banque à trouver du financement basé sur leurs revenus."
+                : "We help Quebec small businesses that were turned down by their bank find revenue-based funding."}
             </p>
           </div>
 
-          {/* Col 2: Fast Links */}
+          {/* Col 2: Direct Contact */}
           <div className="space-y-2">
             <span className="text-xs font-bold text-white uppercase tracking-wider block mb-2">
-              {lang === "fr" ? "Solutions" : "Financing Solutions"}
-            </span>
-            <ul className="space-y-1.5 text-xs text-slate-400">
-              <li>{lang === "fr" ? "Avance de Trésorerie 24H (MCA)" : "24H Cash Flow Advances"}</li>
-              <li>{lang === "fr" ? "Financement d'Équipement Lourd" : "Heavy Equipment Leasing"}</li>
-              <li>{lang === "fr" ? "Marge de Crédit Commerciale" : "Revolving Line of Credit"}</li>
-              <li>{lang === "fr" ? "Affacturage Factures B2B" : "Accounts Receivable Factoring"}</li>
-            </ul>
-          </div>
-
-          {/* Col 3: Direct Contact */}
-          <div className="space-y-2">
-            <span className="text-xs font-bold text-white uppercase tracking-wider block mb-2">
-              {lang === "fr" ? "Bureau des Opérations" : "Operations Desk"}
+              {lang === "fr" ? "Nous joindre" : "Contact"}
             </span>
             <div className="space-y-2 text-xs">
-              <div className="flex items-center gap-2">
+              <a href={`tel:${BRAND.phoneE164}`} className="flex items-center gap-2 hover:text-white">
                 <PhoneCall className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-slate-300 font-semibold">(514) 800-APEX / (514) 555-0199</span>
-              </div>
-              <div className="flex items-center gap-2">
+                <span className="text-slate-300 font-semibold">{BRAND.phoneDisplay}</span>
+              </a>
+              <a href={`mailto:${BRAND.email}`} className="flex items-center gap-2 hover:text-white">
                 <Mail className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-slate-300">direction@apexcapital.ca</span>
+                <span className="text-slate-300">{BRAND.email}</span>
+              </a>
+              <div className="flex items-center gap-2">
+                <Clock className="w-3.5 h-3.5 text-slate-500" />
+                <span>{lang === "fr" ? BRAND.hoursFr : BRAND.hoursEn}</span>
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                <span>Montréal / Vancouver / Canada-Wide</span>
+                <span>La Prairie (Québec)</span>
               </div>
             </div>
           </div>
 
-          {/* Col 4: Institutional Security */}
+          {/* Col 3: Privacy */}
           <div className="space-y-3">
             <span className="text-xs font-bold text-white uppercase tracking-wider block mb-2">
-              {lang === "fr" ? "Sécurité & Conformité" : "Security & Standards"}
+              {lang === "fr" ? "Confidentialité" : "Privacy"}
             </span>
             <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
               <div className="flex items-center gap-2 text-[11px] text-emerald-400 font-semibold">
                 <Lock className="w-3.5 h-3.5" />
-                <span>Cryptage SSL Bancaire 256-Bit</span>
+                <span>{lang === "fr" ? "Vos renseignements sont protégés" : "Your information is protected"}</span>
               </div>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-[10px] text-slate-500 leading-relaxed">
                 {lang === "fr"
-                  ? "Conforme aux normes canadiennes de protection des renseignements personnels (LPRPDE / Flinks Open-Banking)."
-                  : "Compliant with Canadian PIPEDA regulations and Flinks open banking security protocols."}
+                  ? `Vos renseignements servent uniquement à évaluer votre demande et à la transmettre au bailleur de fonds, avec votre consentement (Loi 25). Responsable de la protection des renseignements personnels : ${BRAND.founder}, ${BRAND.email}.`
+                  : `Your information is used only to assess your request and submit it to the funder, with your consent (Quebec Law 25). Privacy officer: ${BRAND.founder}, ${BRAND.email}.`}
               </p>
             </div>
           </div>
@@ -86,14 +78,11 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
         </div>
 
         {/* Bottom Disclaimer */}
-        <div className="border-t border-slate-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+        <div className="border-t border-slate-900 pt-8 space-y-4 text-[11px] text-slate-500">
+          <p className="text-[10px] leading-relaxed max-w-4xl">{disclosure(lang)}</p>
           <p>
-            © {new Date().getFullYear()} Apex Capital Inc. / 9486-9070 Québec Inc. All Rights Reserved.
-          </p>
-          <p className="text-[10px] max-w-xl text-center sm:text-right">
-            {lang === "fr"
-              ? "Apex Capital agit en qualité d'intermédiaire et conseiller en financement commercial. Tous les octrois de crédit sont sujets à l'approbation finale des institutions et bailleurs de fonds partenaires."
-              : "Apex Capital acts as a commercial financing intermediary. All funding facilities are subject to final underwriting approval by institutional lender partners."}
+            © {new Date().getFullYear()} {BRAND.legalName} ({BRAND.name}) — NEQ {BRAND.neq}.{" "}
+            {lang === "fr" ? "Tous droits réservés." : "All rights reserved."}
           </p>
         </div>
 

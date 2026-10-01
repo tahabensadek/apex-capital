@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { SUCCESS_FEE_PCT } from "@/lib/brand";
 import { 
   DollarSign, 
   TrendingUp, 
@@ -26,7 +27,7 @@ export default function FinancialModelPage() {
   const [monthlySpendExpansion, setMonthlySpendExpansion] = useState<number>(2500);
   const [cacDriftPerMonth, setCacDriftPerMonth] = useState<number>(50);
   const [avgFacilitySize, setAvgFacilitySize] = useState<number>(55000);
-  const [brokerFeePct, setBrokerFeePct] = useState<number>(7.0);
+  const [brokerFeePct, setBrokerFeePct] = useState<number>(SUCCESS_FEE_PCT);
   const [monthlyDealCapacity, setMonthlyDealCapacity] = useState<number>(20);
   
   // Startup Immobilization / Setup Costs (CapEx)
@@ -158,7 +159,7 @@ export default function FinancialModelPage() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `apex_capital_realistic_financial_model.csv`);
+    link.setAttribute("download", `capitalfacile_financial_model.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -175,7 +176,7 @@ export default function FinancialModelPage() {
                 A
               </div>
               <span className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                APEX CAPITAL
+                CAPITALFACILE
               </span>
             </Link>
             <span className="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -221,7 +222,7 @@ export default function FinancialModelPage() {
             </h1>
             <p className="text-sm text-slate-400 mt-1 max-w-2xl">
               Calibrated on real Canadian B2B merchant bridge lending: <span className="text-slate-200 font-semibold">10 to 18 funded deals/month</span> ($550k–$1.0M/mo volume), 
-              realistic CAC growth curve ($1,000 → $1,250), and direct 7.0% mandate fee collection via PAD.
+              realistic CAC growth curve ($1,000 → $1,250), and direct {SUCCESS_FEE_PCT}% mandate fee collection via PAD.
             </p>
           </div>
 
@@ -272,7 +273,7 @@ export default function FinancialModelPage() {
               ${Math.round(sixMonthSchedule.cumRevenue).toLocaleString()}
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              7.0% Mandate fee collected upon wire
+              {SUCCESS_FEE_PCT}% mandate fee collected after disbursement
             </div>
           </div>
 
@@ -534,7 +535,7 @@ export default function FinancialModelPage() {
             <div className="flex items-center space-x-2 text-xs font-mono bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
               <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
               <span className="text-slate-300">LibreOffice File:</span>
-              <span className="text-amber-400 font-bold">Apex_Capital_Financial_Model_Accountant.ods</span>
+              <span className="text-amber-400 font-bold">CapitalFacile_Financial_Model.ods</span>
             </div>
           </div>
 

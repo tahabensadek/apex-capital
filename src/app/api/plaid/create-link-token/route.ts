@@ -5,7 +5,7 @@ import { Products, CountryCode } from 'plaid';
 export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
-    const { userId = 'user_apex_' + Date.now(), clientName = 'Apex Capital Vault' } = body;
+    const { userId = 'user_cf_' + Date.now(), clientName = 'CapitalFacile' } = body;
 
     // Check if we have valid API keys or if we provide a sandbox mock token
     if (!process.env.PLAID_CLIENT_ID || process.env.PLAID_CLIENT_ID === 'sandbox_client_id') {

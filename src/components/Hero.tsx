@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { ShieldCheck, Zap, TrendingUp, CheckCircle2, Lock, ArrowUpRight, Sparkles, Building2 } from "lucide-react";
-import { LoanCalculator } from "./LoanCalculator";
+import { CheckCircle2 } from "lucide-react";
+import { FundingCalculator } from "./FundingCalculator";
+import { HAS_CLIENT_FEE, TYPICAL_PROFILE, feeLabel, money } from "@/lib/brand";
 
 interface HeroProps {
   onApplyClick: () => void;
@@ -10,93 +11,97 @@ interface HeroProps {
   lang: "fr" | "en";
 }
 
-export const Hero: React.FC<HeroProps> = ({ onApplyClick, onApplyWithAmount, lang }) => {
+export const Hero: React.FC<HeroProps> = ({ onApplyWithAmount, lang }) => {
+  const min = money(TYPICAL_PROFILE.minAmount, lang);
+  const max = money(TYPICAL_PROFILE.maxAmount, lang);
+
+  const bullets =
+    lang === "fr"
+      ? [
+          "Aucuns frais d'avance",
+          "On vous rappelle en moins de 5 minutes*",
+          "Basé sur vos revenus, pas seulement votre crédit",
+          HAS_CLIENT_FEE ? `${feeLabel("fr")} seulement si vous êtes financé` : "Aucuns frais de courtage",
+        ]
+      : [
+          "No upfront fees",
+          "We call you back in under 5 minutes*",
+          "Based on your revenue, not just your credit",
+          HAS_CLIENT_FEE ? `${feeLabel("en")} only if you get funded` : "No brokerage fee",
+        ];
+
+  const promises =
+    lang === "fr"
+      ? [
+          { value: "< 5 min", label: "Délai de rappel visé*" },
+          { value: "0 $", label: "Frais d'avance" },
+          { value: HAS_CLIENT_FEE ? feeLabel("fr") : "0 %", label: "Seulement si financé" },
+        ]
+      : [
+          { value: "< 5 min", label: "Target callback time*" },
+          { value: "$0", label: "Upfront fees" },
+          { value: HAS_CLIENT_FEE ? feeLabel("en") : "0%", label: "Only if funded" },
+        ];
+
   return (
     <section className="relative pt-32 pb-20 lg:pt-36 lg:pb-28 overflow-hidden bg-grid-pattern">
-      {/* Ambient background glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[450px] bg-emerald-600/15 rounded-full blur-[140px] pointer-events-none animate-pulse-slow"></div>
       <div className="absolute top-1/3 right-10 w-[380px] h-[380px] bg-teal-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          
-          {/* Left Column: Value Proposition & Proof */}
+
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
-            
-            {/* Live Desk Status Pill */}
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-emerald-400 text-xs font-black shadow-lg shadow-emerald-500/10">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span className="text-white font-bold">{lang === "fr" ? "Desk Direct Actif :" : "Direct Desk Online :"}</span>
-              <span className="text-emerald-300 uppercase tracking-wider">{lang === "fr" ? "Décaissements 24H Ouverts" : "24H Wires Active"}</span>
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-emerald-500/40 text-emerald-300 text-xs font-bold shadow-lg shadow-emerald-500/10">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>{lang === "fr" ? "Pour les entreprises refusées par la banque" : "For businesses turned down by the bank"}</span>
             </div>
 
-            {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08]">
               {lang === "fr" ? (
                 <>
-                  N'attendez pas la banque. Débloquez <span className="gradient-text-emerald">$15k à $500k</span> en 24H.
+                  La banque a dit non? Trouvez de <span className="gradient-text-emerald">{min} à {max}</span> pour votre entreprise.
                 </>
               ) : (
                 <>
-                  Don't wait on banks. Unlock <span className="gradient-text-emerald">$15k to $500k</span> in 24 Hours.
+                  Bank said no? Find <span className="gradient-text-emerald">{min} to {max}</span> for your business.
                 </>
               )}
             </h1>
 
-            {/* Sub-headline */}
             <p className="text-base sm:text-lg text-slate-300 max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
               {lang === "fr"
-                ? "Nous guidons les entrepreneurs canadiens vers les solutions de capital commercial basées sur leurs flux de trésorerie réels. Aucun collatéral immobilier, approbation sous 2 heures."
-                : "We connect Canadian business owners with direct commercial capital facilities based on real bank cash flow. 100% unsecured, formal terms in under 2 hours."}
+                ? "On regarde vos dépôts bancaires réels, pas seulement votre cote de crédit. Vous parlez à une vraie personne en quelques minutes, on monte votre dossier et on le présente à notre réseau de bailleurs de fonds pour que vous puissiez prendre de plus gros projets."
+                : "We look at your real bank deposits, not just your credit score. You talk to a real person within minutes, we build your file and present it to our funding network so you can take on bigger projects."}
             </p>
 
-            {/* Bullet Highlights Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs font-bold text-slate-200">
-              <div className="flex items-center gap-2.5 justify-center lg:justify-start bg-slate-900/50 border border-slate-800/80 p-3 rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{lang === "fr" ? "Dépôts bancaires >20k$/mois" : "Gross Bank Deposits >$20k/mo"}</span>
-              </div>
-              <div className="flex items-center gap-2.5 justify-center lg:justify-start bg-slate-900/50 border border-slate-800/80 p-3 rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{lang === "fr" ? "6+ Mois d'activité commerciale" : "6+ Months in Business"}</span>
-              </div>
-              <div className="flex items-center gap-2.5 justify-center lg:justify-start bg-slate-900/50 border border-slate-800/80 p-3 rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{lang === "fr" ? "Déboursement direct sous 24H" : "Direct Wire in 24 Hours"}</span>
-              </div>
-              <div className="flex items-center gap-2.5 justify-center lg:justify-start bg-slate-900/50 border border-slate-800/80 p-3 rounded-2xl">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>{lang === "fr" ? "0$ de frais d'avance (Succès 7%)" : "$0 Upfront Fees (7% Success)"}</span>
-              </div>
+              {bullets.map((b) => (
+                <div key={b} className="flex items-center gap-2.5 justify-center lg:justify-start bg-slate-900/50 border border-slate-800/80 p-3 rounded-2xl">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>{b}</span>
+                </div>
+              ))}
             </div>
 
-            {/* Trust Stats Counter Bar */}
             <div className="pt-6 border-t border-slate-800/80 grid grid-cols-3 gap-4">
-              <div className="bg-slate-900/60 rounded-2xl p-3 border border-slate-800/80 text-center lg:text-left">
-                <span className="text-2xl sm:text-3xl font-black text-white block tracking-tight">$640M+</span>
-                <span className="text-[11px] text-slate-400 font-medium">
-                  {lang === "fr" ? "Réseau de Prêteurs" : "Lender Network"}
-                </span>
-              </div>
-              <div className="bg-slate-900/60 rounded-2xl p-3 border border-slate-800/80 text-center lg:text-left">
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400 block tracking-tight">&lt; 24H</span>
-                <span className="text-[11px] text-slate-400 font-medium">
-                  {lang === "fr" ? "Délai Déboursement" : "Average Wire Time"}
-                </span>
-              </div>
-              <div className="bg-slate-900/60 rounded-2xl p-3 border border-slate-800/80 text-center lg:text-left">
-                <span className="text-2xl sm:text-3xl font-black text-white block tracking-tight">96.8%</span>
-                <span className="text-[11px] text-slate-400 font-medium">
-                  {lang === "fr" ? "Taux d'Approbation" : "Funded Success"}
-                </span>
-              </div>
+              {promises.map((p) => (
+                <div key={p.label} className="bg-slate-900/60 rounded-2xl p-3 border border-slate-800/80 text-center lg:text-left">
+                  <span className="text-2xl sm:text-3xl font-black text-white block tracking-tight">{p.value}</span>
+                  <span className="text-[11px] text-slate-400 font-medium">{p.label}</span>
+                </div>
+              ))}
             </div>
 
+            <p className="text-[10px] text-slate-500">
+              {lang === "fr"
+                ? "* Pendant nos heures d'ouverture. Toute demande est sujette à l'approbation du bailleur de fonds."
+                : "* During business hours. Every application is subject to the funder's approval."}
+            </p>
           </div>
 
-          {/* Right Column: Interactive Capital Calculator */}
           <div className="lg:col-span-6">
-            <LoanCalculator onApplyWithAmount={onApplyWithAmount} lang={lang} />
+            <FundingCalculator onApplyWithAmount={onApplyWithAmount} lang={lang} />
           </div>
 
         </div>

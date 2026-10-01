@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { 
   Building2, ShieldCheck, CheckCircle2, Clock, AlertTriangle, ArrowRight, 
-  FileText, Upload, Lock, Sparkles, Phone, Mail, Check, CreditCard, ChevronRight, Zap
+  FileText, Upload, Lock, Sparkles, Phone, Mail, Check, CreditCard, Zap
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { PlaidLinkModal } from "@/components/PlaidLinkModal";
+import { BRAND, HAS_CLIENT_FEE, feeLabel, feeOn, money } from "@/lib/brand";
 
 interface DealData {
   id: string;
@@ -56,7 +57,6 @@ export default function ClientPortalPage() {
   const [isSigningMandate, setIsSigningMandate] = useState<boolean>(false);
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'bank' | 'docs' | 'mandate'>('bank');
-  const [offerAccepted, setOfferAccepted] = useState<boolean>(false);
 
   useEffect(() => {
     fetch(`/api/deals/${dealId}?t=${Date.now()}`, { 
@@ -85,10 +85,10 @@ export default function ClientPortalPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          public_token: 'link-sandbox-apex-mock-' + Date.now(),
+          public_token: 'link-sandbox-cf-mock-' + Date.now(),
           dealId: dealId,
           institution: bankInfo.institution,
-          businessName: deal?.companyName || 'Apex Client Corp'
+          businessName: deal?.companyName || 'Client'
         })
       });
       const data = await res.json();
@@ -146,36 +146,21 @@ export default function ClientPortalPage() {
     }
   };
 
-  const handleAcceptOffer = async () => {
-    setOfferAccepted(true);
-    await fetch(`/api/deals/${dealId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        stage: 5,
-        status: 'DISBURSEMENT_INITIATED',
-        offerAcceptedAt: new Date().toISOString()
-      })
-    });
-    setDeal(prev => prev ? { ...prev, stage: 5, status: 'DISBURSEMENT_INITIATED' } : null);
-    confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-white">
         <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-slate-400 font-mono text-sm">Authenticating Apex Secure Session...</p>
+        <p className="text-slate-400 font-mono text-sm">Loading your file...</p>
       </div>
     );
   }
 
   const stages = [
     { num: 1, title: "Intake & Bank Connect", desc: "Plaid / Flinks verified", done: deal?.plaidConnected },
-    { num: 2, title: "Risk Pre-Screening", desc: "< 2 NSFs, $30k+ vol", done: deal?.plaidConnected },
-    { num: 3, title: "Underwriting Review", desc: "Direct with BCC Fund desk", done: deal?.stage ? deal.stage >= 4 : false, current: deal?.stage === 3 },
-    { num: 4, title: "Term Sheet & Approval", desc: "Capital offer ready", done: deal?.stage ? deal.stage >= 5 : false, current: deal?.stage === 4 },
-    { num: 5, title: "Capital Disbursed", desc: "Same-Day Wire Transfer", done: deal?.stage === 5 },
+    { num: 2, title: "File Review", desc: `Reviewed by ${BRAND.name}`, done: deal?.plaidConnected },
+    { num: 3, title: "Funder Review", desc: "Underwriting by the funder", done: deal?.stage ? deal.stage >= 4 : false, current: deal?.stage === 3 },
+    { num: 4, title: "Funder Decision", desc: "Written offer from the funder, if approved", done: deal?.stage ? deal.stage >= 5 : false, current: deal?.stage === 4 },
+    { num: 5, title: "Funds Disbursed", desc: "Sent by the funder", done: deal?.stage === 5 },
   ];
 
   return (
@@ -189,7 +174,7 @@ export default function ClientPortalPage() {
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-bold tracking-tight text-white text-base">APEX CAPITAL</span>
+                <span className="font-bold tracking-tight text-white text-base">{BRAND.name}</span>
                 <span className="px-1.5 py-0.5 text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded">SECURE PORTAL</span>
               </div>
               <p className="text-xs text-slate-400">Deal Reference: <span className="font-mono text-slate-300">#{dealId}</span></p>
@@ -198,15 +183,15 @@ export default function ClientPortalPage() {
 
           <div className="flex items-center space-x-3">
             <a 
-              href="tel:+15148002739" 
+              href={`tel:${BRAND.phoneE164}`} 
               className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300 transition"
             >
               <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Direct Desk</span>
+              <span>{BRAND.phoneDisplay}</span>
             </a>
             <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>24H FAST-LANE</span>
+              <span>CLIENT PORTAL</span>
             </div>
           </div>
         </div>
@@ -223,7 +208,7 @@ export default function ClientPortalPage() {
             <div>
               <div className="flex items-center space-x-2 text-xs font-mono text-emerald-400 uppercase tracking-wider mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Commercial Bridge Allocation</span>
+                <span>Funding Request</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {deal?.companyName || "Commercial Borrower"}
@@ -242,10 +227,10 @@ export default function ClientPortalPage() {
               </div>
               <div className="h-10 w-[1px] bg-slate-800" />
               <div>
-                <p className="text-[11px] font-mono text-slate-400 uppercase">Disbursement</p>
+                <p className="text-[11px] font-mono text-slate-400 uppercase">Decision</p>
                 <p className="text-sm font-semibold text-white flex items-center space-x-1.5 mt-1">
                   <Zap className="w-4 h-4 text-amber-400" />
-                  <span>24-Hour Wire</span>
+                  <span>By the funder</span>
                 </p>
               </div>
             </div>
@@ -259,16 +244,16 @@ export default function ClientPortalPage() {
                 <p className="text-xs font-mono text-slate-400">CURRENT DESK STATUS</p>
                 <p className="text-sm font-medium text-slate-200">
                   {deal?.stage === 5 
-                    ? "🎉 Funds wired! Your commercial advance is active."
+                    ? "Funds disbursed by the funder."
                     : deal?.stage === 4 
-                      ? "⚡ Approved Term Sheet Ready: Review terms & execute below."
+                      ? "The funder has made a decision. Check your email for its written offer."
                       : deal?.stage === 3 
-                        ? "🔍 File packaged with verified bank records. Active review with senior credit desk."
-                        : "⏳ Awaiting Instant Bank Verification below to generate instant approval."}
+                        ? "Your file has been presented to the funder and is under review."
+                        : "Next step: connect your bank or upload your statements so we can complete your file."}
                 </p>
               </div>
             </div>
-            <span className="hidden sm:inline-block text-xs font-mono text-slate-400">Underwriter: partners@bccfund.com</span>
+            <span className="hidden sm:inline-block text-xs font-mono text-slate-400">{BRAND.email}</span>
           </div>
         </div>
 
@@ -335,7 +320,7 @@ export default function ClientPortalPage() {
             }`}
           >
             <FileText className="w-4 h-4" />
-            <span>2. Apex Mandate Agreement</span>
+            <span>2. Mandate Agreement</span>
           </button>
           <button
             onClick={() => setActiveTab('docs')}
@@ -468,9 +453,9 @@ export default function ClientPortalPage() {
                   </div>
 
                   <div className="p-3 bg-slate-900 rounded-lg border border-slate-800">
-                    <p className="text-[10px] font-mono text-slate-400 uppercase">Capital Pré-Approuvé</p>
+                    <p className="text-[10px] font-mono text-slate-400 uppercase">Montant demandé</p>
                     <p className="text-base font-black text-emerald-400 font-mono">${(deal?.amountRequested || 65000).toLocaleString()} CAD</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Prêt pour term sheet final</p>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Sujet à l&apos;approbation du bailleur de fonds</p>
                   </div>
                 </div>
               </div>
@@ -483,18 +468,18 @@ export default function ClientPortalPage() {
           <div className="bg-slate-900 rounded-2xl border border-slate-800 p-6 space-y-5">
             <div>
               <h3 className="text-lg font-bold text-white flex items-center space-x-2">
-                <span>Apex Capital Brokerage Success Mandate</span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">LEGAL LOCK</span>
+                <span>{BRAND.name} Success-Fee Mandate</span>
               </h3>
               <p className="text-xs text-slate-400 mt-1">
-                Zero upfront fees. Apex Capital acts as your exclusive commercial finance advisor. Our success fee (7.0%) is payable only upon actual fund disbursement to your account.
+                No upfront fees. {HAS_CLIENT_FEE ? `Our success fee (${feeLabel("en")}, ${money(feeOn(deal?.amountRequested || 0), "en")} on the amount requested) is payable only if you accept an offer and funds are disbursed to your account.` : "No brokerage fee is charged to you."}
               </p>
             </div>
 
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 max-h-44 overflow-y-auto text-xs text-slate-400 font-mono space-y-2 leading-relaxed">
-              <p><strong className="text-slate-200">1. SCOPE OF SERVICES:</strong> Apex Capital Inc. agrees to package, underwrite, and submit Client&apos;s financing file to accredited commercial funding institutions (including BCC Fund and institutional syndicates).</p>
-              <p><strong className="text-slate-200">2. CONTINGENT SUCCESS FEE:</strong> Client agrees to pay Apex Capital a success fee equal to 7.0% of the total gross capital disbursed, payable via direct lender deduction or EFT within 24 hours of funds clearing Client&apos;s account.</p>
-              <p><strong className="text-slate-200">3. NO UPFRONT FEES:</strong> If no funding is obtained or accepted, Client owes exactly $0.00.</p>
+              <p><strong className="text-slate-200">1. SCOPE OF SERVICES:</strong> {BRAND.legalName} ({BRAND.name}) will prepare the Client&apos;s file and present it to its partner funder. {BRAND.name} is not a lender and does not make funding decisions.</p>
+              <p><strong className="text-slate-200">2. SUCCESS FEE:</strong> If the Client accepts a funder&apos;s offer and funds are disbursed, the Client pays {BRAND.name} {feeLabel("en")} of the gross amount disbursed, directly to {BRAND.name}, after disbursement.</p>
+              <p><strong className="text-slate-200">3. NO UPFRONT FEES:</strong> If no funding is obtained or the Client declines the offer, the Client owes nothing.</p>
+              <p className="text-amber-300">This summary is not the mandate. The full mandate is sent to you for e-signature after your call with us.</p>
             </div>
 
             {!deal?.mandateSigned ? (
@@ -508,7 +493,7 @@ export default function ClientPortalPage() {
                     className="w-4 h-4 rounded bg-slate-800 border-slate-700 text-emerald-500 focus:ring-0 cursor-pointer"
                   />
                   <label htmlFor="mandateCheck" className="text-xs text-slate-300 cursor-pointer">
-                    I acknowledge and agree to the Apex Capital Success Mandate terms on behalf of <strong className="text-white">{deal?.companyName}</strong>.
+                    I have read this summary on behalf of <strong className="text-white">{deal?.companyName}</strong>.
                   </label>
                 </div>
 
@@ -526,7 +511,7 @@ export default function ClientPortalPage() {
                   <div>
                     <label className="text-[11px] font-mono text-slate-400 uppercase">Signature Timestamp</label>
                     <div className="mt-1 px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-400">
-                      {new Date().toLocaleDateString()} — Cryptographically Bound
+                      {new Date().toLocaleDateString()}
                     </div>
                   </div>
                 </div>
@@ -537,16 +522,16 @@ export default function ClientPortalPage() {
                   className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition disabled:opacity-40 cursor-pointer flex items-center justify-center space-x-2"
                 >
                   <FileText className="w-4 h-4" />
-                  <span>Execute Mandate & Lock In Rate</span>
+                  <span>Confirm</span>
                 </button>
               </div>
             ) : (
               <div className="p-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 flex items-center justify-between text-xs">
                 <div className="flex items-center space-x-2 text-emerald-400 font-medium">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Mandate Signed & Legally Locked by {mandateName}</span>
+                  <span>Confirmed by {mandateName}</span>
                 </div>
-                <span className="font-mono text-slate-400 text-[10px]">SUCCESS FEE: 7.5% UPON WIRE</span>
+                <span className="font-mono text-slate-400 text-[10px]">{HAS_CLIENT_FEE ? `SUCCESS FEE: ${feeLabel("en")} ON DISBURSEMENT` : "NO CLIENT FEE"}</span>
               </div>
             )}
           </div>
@@ -596,7 +581,7 @@ export default function ClientPortalPage() {
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
                 <div>
                   <p className="text-xs font-bold text-white">3. Void Cheque / PAD Form</p>
-                  <p className="text-[11px] text-slate-400 mt-1">For 24h wire disbursement & direct debit.</p>
+                  <p className="text-[11px] text-slate-400 mt-1">Business account the funds will be sent to.</p>
                 </div>
                 <label className="mt-4 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-center text-xs font-medium text-slate-200 cursor-pointer transition flex items-center justify-center space-x-1.5">
                   <Upload className="w-3.5 h-3.5 text-emerald-400" />
@@ -620,59 +605,15 @@ export default function ClientPortalPage() {
           </div>
         )}
 
-        {/* 🌟 FINAL OFFER APPROVAL CARD (Appears when Plaid is connected / Stage >= 3) */}
-        {plaidSuccess && (
-          <div className="bg-gradient-to-br from-emerald-950/50 via-slate-900 to-slate-900 rounded-2xl border-2 border-emerald-500/50 p-6 shadow-2xl space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500 text-slate-950 uppercase tracking-wider">
-                  OFFICIAL OFFER READY
-                </span>
-                <h3 className="text-2xl font-black text-white mt-2">Commercial Funding Allocation Approved</h3>
-                <p className="text-xs text-slate-300">Underwritten by Direct Lending Desk • 24-Hour Wire Guarantee</p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs font-mono text-slate-400">Approved Loan Amount</p>
-                <p className="text-3xl font-black text-emerald-400 font-mono">${(deal?.amountRequested || 65000).toLocaleString()} <span className="text-xs font-normal text-slate-300">CAD</span></p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-950/80 rounded-xl border border-slate-800 text-xs font-mono">
-              <div>
-                <span className="text-slate-500 block text-[10px]">TERM</span>
-                <span className="text-white font-bold">7 Months</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[10px]">PAYMENT SCHEDULE</span>
-                <span className="text-white font-bold">Weekly ($2,390 / wk)</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[10px]">COLLATERAL</span>
-                <span className="text-emerald-400 font-bold">Unsecured</span>
-              </div>
-              <div>
-                <span className="text-slate-500 block text-[10px]">ESTIMATED WIRE</span>
-                <span className="text-white font-bold">Tomorrow 12:00 PM</span>
-              </div>
-            </div>
-
-            {!offerAccepted ? (
-              <button
-                onClick={handleAcceptOffer}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-base tracking-wide uppercase transition shadow-2xl shadow-emerald-500/30 flex items-center justify-center space-x-2 cursor-pointer"
-              >
-                <Check className="w-5 h-5 stroke-[3]" />
-                <span>Accept Terms & Authorize 24H Wire Transfer</span>
-                <ChevronRight className="w-5 h-5 stroke-[3]" />
-              </button>
-            ) : (
-              <div className="p-4 rounded-xl bg-emerald-900/60 border border-emerald-400 text-center space-y-1">
-                <p className="text-emerald-300 font-bold text-sm">🎉 Offer Accepted! Wire transfer is being prepared.</p>
-                <p className="text-xs text-slate-300">Your account representative is finalizing closing documents with BCC Fund.</p>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Offers come from the funder, never from us: see partner agreement s. 3. */}
+        <div className="bg-slate-900/90 rounded-2xl border border-slate-800 p-6 space-y-2 text-xs text-slate-400">
+          <p className="text-sm font-bold text-white">What happens next</p>
+          <p>
+            Once your file is complete, we present it to the funder. If your file is approved, the funder sends you its
+            offer and agreement in writing. You review the amount, total cost and payment schedule, and you decide whether
+            to accept. {BRAND.name} cannot approve files or accept offers on the funder&apos;s behalf.
+          </p>
+        </div>
 
         {/* Interactive Plaid Link Modal Popup */}
         <PlaidLinkModal

@@ -195,7 +195,7 @@ export default function MissionControlBoardPage() {
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold tracking-tight text-white text-base">APEX WAR ROOM</span>
+                <span className="font-extrabold tracking-tight text-white text-base">CAPITALFACILE WAR ROOM</span>
                 <span className="px-2 py-0.5 text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-full">
                   NATIVE JETSON OS
                 </span>
@@ -244,7 +244,7 @@ export default function MissionControlBoardPage() {
                 <span>Objectif Q1 2027 — Machine Autonome</span>
               </div>
               <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                Plan de Lancement Apex Finance
+                Plan de Lancement CapitalFacile
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
                 Chaque carte complétée déploie la machine de courtage vers 1 deal/jour sans intervention téléphonique manuelle.

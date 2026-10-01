@@ -33,7 +33,7 @@ const SAMPLE_PROFILES: { label: string; data: FlinksAccountData }[] = [
       accountNumber: '****9124',
       institution: 'TD Canada Trust',
       holderName: 'Harpreet Singh',
-      businessName: 'Apex Logistics Freight Ltd.',
+      businessName: 'Logistique Rive-Sud Ltée',
       currentBalance: 6200,
       transactions: [
         { id: '1', date: '2026-09-02', description: 'FREIGHT BROKERAGE FACTORING DEP', amount: 18500, balance: 21200 },
@@ -88,7 +88,7 @@ export default function UnderwritingDeskPage() {
               <Zap className="w-4 h-4" /> Moteur de Décision Algorithmique v1.0
             </div>
             <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3">
-              Apex Capital <span className="text-emerald-400 font-normal">| Desk de Souscription Instantané</span>
+              CapitalFacile <span className="text-emerald-400 font-normal">| Desk de Souscription Instantané</span>
             </h1>
             <p className="text-slate-400 text-sm mt-1">
               Évaluation Flinks Open Banking en 0.8s • Détection de Stacking • Calcul de Spread 6.5% Net
@@ -200,10 +200,10 @@ export default function UnderwritingDeskPage() {
               </div>
             </div>
 
-            {/* 3. Apex Capital Commission Spread */}
+            {/* 3. CapitalFacile Commission Spread */}
             <div className="bg-gradient-to-br from-emerald-950/50 to-slate-950 border border-emerald-500/40 rounded-xl p-5 space-y-4">
               <div className="flex items-center justify-between text-xs font-mono text-emerald-400 uppercase">
-                <span className="flex items-center gap-1.5"><Award className="w-4 h-4" /> Spread Net Apex Capital</span>
+                <span className="flex items-center gap-1.5"><Award className="w-4 h-4" /> Spread Net CapitalFacile</span>
                 <span className="font-bold bg-emerald-500 text-slate-950 px-2 py-0.5 rounded text-[10px]">6.5% Brut</span>
               </div>
               <div className="space-y-2">

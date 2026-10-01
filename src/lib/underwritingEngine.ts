@@ -1,5 +1,5 @@
 /**
- * Apex Capital Automated Underwriting & Decisioning Engine (v1.0)
+ * CapitalFacile internal pre-screening & Decisioning Engine (v1.0)
  * Evaluates Flinks Open Banking JSON transactional payloads in < 1.0s.
  * Determines deal viability, max loan capacity, risk tier, and net commission spread.
  */
@@ -117,7 +117,7 @@ export function runUnderwritingEngine(data: FlinksAccountData): UnderwritingResu
   const netMonthlyCashFlow = (totalDeposits - totalDebits) / monthsCovered;
 
   // 5. Decision & Tiering Logic
-  // Amir (BCC Fund) Exact Buy-Box Criteria
+  // Funder buy-box guidelines (indicative only; the funder decides)
   const MIN_MONTHLY_REVENUE = 20000;
   const MAX_ALLOWED_NSFS_PER_MONTH = 2;
   const MIN_CREDIT_SCORE = 500;
@@ -128,16 +128,16 @@ export function runUnderwritingEngine(data: FlinksAccountData): UnderwritingResu
   const isNsfQualified = nsfPerMonth <= MAX_ALLOWED_NSFS_PER_MONTH;
 
   let decision: UnderwritingResult['decision'] = 'APPROVED_TIER_A';
-  let headline = 'APPROBATION IMMÉDIATE BCC FUND (TIER A / GOLDEN FILE)';
+  let headline = 'PROFIL FORT — À PRÉSENTER AU BAILLEUR (TIER A)';
 
   if (!isRevenueQualified) {
     decision = 'DECLINED';
-    headline = `NON-ADMISSIBLE : Revenu mensuel inférieur au seuil Amir ($${Math.round(monthlyGrossRevenue).toLocaleString()} / min $20,000)`;
+    headline = `NON-ADMISSIBLE : Revenu mensuel inférieur au seuil habituel ($${Math.round(monthlyGrossRevenue).toLocaleString()} / min $20,000)`;
     riskFlags.push(`Revenu mensuel ($${Math.round(monthlyGrossRevenue).toLocaleString()}) inférieur au minimum requis ($20,000 CAD).`);
   } else if (!isNsfQualified) {
     decision = 'DECLINED';
     headline = `NON-ADMISSIBLE : Trop de NSF (${nsfPerMonth.toFixed(1)}/mois - max 2 autorisé)`;
-    riskFlags.push(`Moyenne de ${nsfPerMonth.toFixed(1)} NSF/mois dépasse la limite stricte de Amir (max 2/mois).`);
+    riskFlags.push(`Moyenne de ${nsfPerMonth.toFixed(1)} NSF/mois dépasse la limite habituelle (max 2/mois).`);
   } else if (monthlyGrossRevenue >= 35000 && nsfCount90Days === 0) {
     decision = 'APPROVED_TIER_A';
     headline = 'APPROBATION IMMÉDIATE FAST-TRACK 24H (TIER A / GOLDEN FILE)';
@@ -146,7 +146,7 @@ export function runUnderwritingEngine(data: FlinksAccountData): UnderwritingResu
     strengths.push(`${nsfCount90Days} NSF sur 90 jours (Historique bancaire propre).`);
   } else {
     decision = 'APPROVED_TIER_B';
-    headline = 'APPROBATION STANDARD BCC FUND (TIER B / ADMISSIBLE 24H)';
+    headline = 'PROFIL ADMISSIBLE — À PRÉSENTER AU BAILLEUR (TIER B)';
     strengths.push(`Conforme aux critères Amir : $${Math.round(monthlyGrossRevenue).toLocaleString()}/mo et ${nsfCount90Days} NSF total.`);
   }
 
@@ -164,7 +164,7 @@ export function runUnderwritingEngine(data: FlinksAccountData): UnderwritingResu
   const estimatedDailyPayment = Math.round((totalPayback / businessDays) * 100) / 100;
   const estimatedWeeklyPayment = Math.round((totalPayback / (termMonths * 4.33)) * 100) / 100;
 
-  // 8. Apex Capital Payout Spreads
+  // 8. CapitalFacile payout estimate
   const clientMandate5Percent = Math.round(recommendedLoan * 0.05);
   const lenderCommission1_5Percent = Math.round(recommendedLoan * 0.015);
   const totalGrossSpread = clientMandate5Percent + lenderCommission1_5Percent;

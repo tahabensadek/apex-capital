@@ -33,12 +33,12 @@ const PIPELINE_COLUMNS: { key: CRMLead['stage']; title: string; color: string; b
   { key: 'INBOUND_NEW', title: '🚨 Nouveaux Leads (< 3 Min)', color: 'border-rose-500/80', badgeBg: 'bg-rose-500/20 text-rose-300' },
   { key: 'CONTACTED_FLINKS', title: '📱 Contacté & Plaid Ouvert', color: 'border-amber-500/80', badgeBg: 'bg-amber-500/20 text-amber-300' },
   { key: 'UNDERWRITING', title: '⚡ Souscription & Buy-Box', color: 'border-blue-500/80', badgeBg: 'bg-blue-500/20 text-blue-300' },
-  { key: 'MANDATE_SIGNED', title: '✍️ Mandat 7.0% Direction to Pay', color: 'border-purple-500/80', badgeBg: 'bg-purple-500/20 text-purple-300' },
-  { key: 'SENT_TO_LENDER', title: '🏦 Transmis au Prêteur (BCC Fund / AFN)', color: 'border-cyan-500/80', badgeBg: 'bg-cyan-500/20 text-cyan-300' },
-  { key: 'FUNDED', title: '💰 Déboursé & Commission 7.0% Virée', color: 'border-emerald-500/80', badgeBg: 'bg-emerald-500/20 text-emerald-300' },
+  { key: 'MANDATE_SIGNED', title: '✍️ Mandat signé', color: 'border-purple-500/80', badgeBg: 'bg-purple-500/20 text-purple-300' },
+  { key: 'SENT_TO_LENDER', title: '🏦 Transmis au bailleur de fonds', color: 'border-cyan-500/80', badgeBg: 'bg-cyan-500/20 text-cyan-300' },
+  { key: 'FUNDED', title: '💰 Déboursé & honoraires perçus', color: 'border-emerald-500/80', badgeBg: 'bg-emerald-500/20 text-emerald-300' },
 ];
 
-export default function ApexCRMPage() {
+export default function CrmPage() {
   const [leads, setLeads] = useState<CRMLead[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedLead, setSelectedLead] = useState<CRMLead | null>(null);
@@ -127,7 +127,7 @@ export default function ApexCRMPage() {
   };
 
   const handleTriggerQuickSms = (phone: string, name: string) => {
-    setSmsNotification(`SMS Speed-to-Lead Telnyx envoyé à ${name} (${phone}) : "Salut ${name}, c'est Taha d'Apex Capital..."`);
+    setSmsNotification(`SMS Speed-to-Lead Telnyx envoyé à ${name} (${phone}) : "Salut ${name}, ici Taha de CapitalFacile..."`);
     setTimeout(() => setSmsNotification(null), 5000);
   };
 
@@ -156,7 +156,7 @@ export default function ApexCRMPage() {
         <div>
           <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs uppercase tracking-widest mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-            APEX CAPITAL TRADING FLOOR • LIVE DESK OPERATING SYSTEM
+            CAPITALFACILE TRADING FLOOR • LIVE DESK OPERATING SYSTEM
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight flex items-center gap-3">
             Origination & Deal Flow CRM
@@ -404,7 +404,7 @@ export default function ApexCRMPage() {
                 <span className="text-2xl font-black text-white">{selectedLead.amount.toLocaleString()} $ CAD</span>
               </div>
               <div>
-                <span className="text-xs text-slate-400 block font-mono">Commission Nette Apex (6.5%)</span>
+                <span className="text-xs text-slate-400 block font-mono">Revenu CapitalFacile estimé</span>
                 <span className="text-2xl font-black text-emerald-400">+{selectedLead.apexCommission.toLocaleString()} $ NET</span>
               </div>
             </div>

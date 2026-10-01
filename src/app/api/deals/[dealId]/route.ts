@@ -34,23 +34,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ deal
     deal = {
       id: dealId,
       dealId: dealId,
-      companyName: 'Apex Partner Corp',
+      companyName: 'Client',
       contactName: 'Commercial Director',
       phone: '+1 (514) 555-0199',
       email: 'finance@apexclient.ca',
       amountRequested: 65000,
       monthlyRevenue: 55000,
       useOfFunds: 'Working Capital & Inventory Bridge',
-      stage: 1, // 1: Intake/Bank, 2: Pre-Screened, 3: Underwriting (BCC Fund), 4: Approved Offer, 5: Funded
+      stage: 1, // 1: Intake/Bank, 2: Pre-Screened, 3: Funder review, 4: Approved Offer, 5: Funded
       status: 'AWAITING_BANK_CONNECT',
       mandateSigned: false,
       plaidConnected: false,
       documents: [],
       createdAt: new Date().toISOString(),
       accountExec: {
-        name: 'Apex Capital Desk',
-        phone: '+1 (514) 800-APEX',
-        email: 'partners@bccfund.com'
+        name: 'CapitalFacile',
+        phone: '(514) 824-8618',
+        email: 'info@capitalfacile.ca'
       }
     };
     deals.unshift(deal);

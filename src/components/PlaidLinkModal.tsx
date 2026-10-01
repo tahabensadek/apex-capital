@@ -50,7 +50,7 @@ export const PlaidLinkModal: React.FC<PlaidLinkModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
-  businessName = "Apex Client Corp"
+  businessName = "Client"
 }) => {
   const [step, setStep] = useState<"SELECT_BANK" | "CREDENTIALS" | "MFA" | "SELECT_ACCOUNT" | "SUCCESS">("SELECT_BANK");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -265,7 +265,7 @@ export const PlaidLinkModal: React.FC<PlaidLinkModalProps> = ({
               <div className="bg-emerald-500/10 border border-emerald-500/20 p-2.5 rounded-lg flex items-start space-x-2 text-[11px] text-emerald-300">
                 <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>
-                  Connexion en mode lecture seule (Read-Only). Apex Capital analyse uniquement les flux 90 jours pour votre approbation.
+                  Connexion en mode lecture seule (Read-Only). CapitalFacile consulte uniquement vos transactions des 90 derniers jours pour préparer votre dossier.
                 </span>
               </div>
 

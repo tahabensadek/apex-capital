@@ -10,7 +10,7 @@ const CRM_FILE = path.join(DATA_DIR, 'crm_leads.json');
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { public_token, dealId, institution = 'RBC Royal Bank', businessName = 'Apex Client' } = body;
+    const { public_token, dealId, institution = 'RBC Royal Bank', businessName = 'Client' } = body;
 
     let accountData: FlinksAccountData;
 
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
       };
     }
 
-    // Run Apex Automated Underwriting Engine on the Plaid data
+    // Run automated Underwriting Engine on the Plaid data
     const underwritingResult = runUnderwritingEngine(accountData);
 
     // If dealId is provided, update persistent CRM data
