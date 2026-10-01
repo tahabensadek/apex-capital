@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import { BRAND } from "@/lib/brand";
+import { GOOGLE_ADS_ID, gtagBootstrap } from "@/lib/ads";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(BRAND.url),
   title: `${BRAND.name} — Financement pour entreprises refusées par la banque`,
   description:
-    "Financement commercial de 10 000 $ à 500 000 $ basé sur vos revenus, pour les entreprises québécoises que la banque a refusées. Aucuns frais d'avance, réponse rapide.",
+    "Financement commercial de 10 000 $ à 500 000 $ basé sur vos revenus, pour les entreprises canadiennes que la banque a refusées. Aucuns frais d'avance, réponse rapide.",
   openGraph: {
     title: `${BRAND.name} — Financement d'entreprise`,
     description: "Financement commercial basé sur vos revenus. Aucuns frais d'avance.",
@@ -34,7 +36,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="fr-CA"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        {GOOGLE_ADS_ID && (
+          <Script id="gtag-init" strategy="afterInteractive">
+            {gtagBootstrap(GOOGLE_ADS_ID)}
+          </Script>
+        )}
+      </body>
     </html>
   );
 }

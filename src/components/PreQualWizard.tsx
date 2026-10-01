@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { BRAND, TYPICAL_PROFILE, money } from "@/lib/brand";
+import { isWithinBusinessHours } from "@/lib/hours";
+import { readAttribution, trackLeadConversion } from "@/lib/ads";
 
 interface PreQualWizardProps {
   initialAmount?: number;
@@ -73,8 +75,17 @@ const TIME_IN_BUSINESS = [
 const PROVINCES = [
   { id: "QC", label: "Québec" },
   { id: "ON", label: "Ontario" },
+  { id: "BC", label: "Colombie-Britannique / British Columbia" },
+  { id: "AB", label: "Alberta" },
+  { id: "MB", label: "Manitoba" },
+  { id: "SK", label: "Saskatchewan" },
+  { id: "NS", label: "Nouvelle-Écosse / Nova Scotia" },
   { id: "NB", label: "Nouveau-Brunswick / New Brunswick" },
-  { id: "OTHER", label: "Autre / Other" },
+  { id: "NL", label: "Terre-Neuve-et-Labrador / Newfoundland and Labrador" },
+  { id: "PE", label: "Île-du-Prince-Édouard / Prince Edward Island" },
+  { id: "YT", label: "Yukon" },
+  { id: "NT", label: "Territoires du Nord-Ouest / Northwest Territories" },
+  { id: "NU", label: "Nunavut" },
 ];
 
 const digitsOnly = (s: string) => s.replace(/\D/g, "");
@@ -83,19 +94,6 @@ const isValidPhone = (s: string) => {
   return d.length === 10 || (d.length === 11 && d.startsWith("1"));
 };
 const isValidEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.trim());
-
-/** True during the hours we promise a callback (Mon–Fri, 8:00–18:00 Montreal time). */
-const isWithinBusinessHours = () => {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Toronto",
-    weekday: "short",
-    hour: "numeric",
-    hour12: false,
-  }).formatToParts(new Date());
-  const weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
-  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
-  return !["Sat", "Sun"].includes(weekday) && hour >= 8 && hour < 18;
-};
 
 const inputClass =
   "w-full bg-transparent text-sm font-bold text-white focus:outline-none placeholder:text-slate-600";
@@ -186,6 +184,7 @@ export const PreQualWizard: React.FC<PreQualWizardProps> = ({ initialAmount = 65
       consentText,
       lang,
       landingUrl: typeof window !== "undefined" ? window.location.href : "",
+      attribution: readAttribution(),
     };
 
     try {
@@ -197,6 +196,7 @@ export const PreQualWizard: React.FC<PreQualWizardProps> = ({ initialAmount = 65
       const data = await res.json();
       if (!res.ok || !data?.success) throw new Error(data?.error || "submit_failed");
       setLeadId(data.leadId);
+      trackLeadConversion(data.leadId);
       setSubmittedInHours(isWithinBusinessHours());
       onComplete({ ...payload, leadId: data.leadId });
       confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ["#10b981", "#14b8a6"] });
@@ -540,7 +540,12 @@ export const PreQualWizard: React.FC<PreQualWizardProps> = ({ initialAmount = 65
 
               <label className="flex gap-3 items-start text-xs text-slate-300 bg-slate-950/60 border border-slate-800 rounded-2xl p-4 cursor-pointer">
                 <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} className="mt-0.5 w-4 h-4 accent-emerald-400 shrink-0" />
-                <span>{consentText}</span>
+                <span>
+                  {consentText}{" "}
+                  <a href="/confidentialite" target="_blank" className="underline text-emerald-400">
+                    {fr ? "Politique de confidentialité" : "Privacy policy"}
+                  </a>
+                </span>
               </label>
 
               <p className="text-[11px] text-slate-500 leading-relaxed">

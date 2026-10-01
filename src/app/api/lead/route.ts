@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-import { BRAND, feeOn, newLeadId } from "@/lib/brand";
+import { BRAND, newLeadId } from "@/lib/brand";
+import { isWithinBusinessHours } from "@/lib/hours";
+import { saveLead, type Attribution, type LeadRecord } from "@/lib/leadStore";
+import { hasLeadLinkSecret, leadLinkPath } from "@/lib/leadLink";
 
 export const dynamic = "force-dynamic";
 
@@ -12,18 +13,6 @@ const toE164 = (raw: string) => {
   if (d.length === 10) return `+1${d}`;
   if (d.length === 11 && d.startsWith("1")) return `+${d}`;
   return "";
-};
-
-const isWithinBusinessHours = () => {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Toronto",
-    weekday: "short",
-    hour: "numeric",
-    hour12: false,
-  }).formatToParts(new Date());
-  const weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
-  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? 0);
-  return !["Sat", "Sun"].includes(weekday) && hour >= 8 && hour < 18;
 };
 
 async function sendSms(to: string, text: string) {
@@ -50,37 +39,6 @@ async function postToWebhook(lead: Record<string, unknown>) {
   });
   if (!res.ok) console.error("Lead webhook error", res.status);
   return res.ok;
-}
-
-/**
- * Local JSON files work in `next dev` but NOT on Vercel (read-only filesystem),
- * so a failure here is logged, not fatal. Use LEAD_WEBHOOK_URL or a database in production.
- */
-function saveLocally(lead: Record<string, unknown>, deal: Record<string, unknown>) {
-  try {
-    const dir = path.join(process.cwd(), "data");
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    for (const [file, record] of [
-      ["leads.json", lead],
-      ["crm_leads.json", deal],
-    ] as const) {
-      const fp = path.join(dir, file);
-      let rows: unknown[] = [];
-      if (fs.existsSync(fp)) {
-        try {
-          rows = JSON.parse(fs.readFileSync(fp, "utf-8"));
-        } catch {
-          rows = [];
-        }
-      }
-      rows.unshift(record);
-      fs.writeFileSync(fp, JSON.stringify(rows, null, 2), "utf-8");
-    }
-    return true;
-  } catch (err) {
-    console.error("Local lead storage unavailable:", (err as Error).message);
-    return false;
-  }
 }
 
 export async function POST(req: Request) {
@@ -111,7 +69,15 @@ export async function POST(req: Request) {
   }
 
   const now = new Date().toISOString();
-  const lead = {
+  const rawAttribution = (body.attribution && typeof body.attribution === "object" ? body.attribution : {}) as Record<string, unknown>;
+  const attribution: Attribution = {};
+  for (const key of ["gclid", "gbraid", "wbraid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"] as const) {
+    const v = str(rawAttribution[key], 300);
+    if (v) attribution[key] = v;
+  }
+  const inHours = isWithinBusinessHours();
+
+  const lead: LeadRecord = {
     id: newLeadId(),
     businessName,
     ownerName,
@@ -130,31 +96,17 @@ export async function POST(req: Request) {
     lang,
     consent: { toContact: true, text: str(body.consentText, 600), at: now },
     landingUrl: str(body.landingUrl, 500),
-    status: "NEW",
+    attribution,
     createdAt: now,
-    firstContactAt: null as string | null,
+    createdInBusinessHours: inHours,
+    status: "NEW",
+    firstCalledAt: null,
+    callAttempts: 0,
+    fundedAmount: null,
+    fundedAt: null,
+    updatedAt: now,
   };
 
-  const deal = {
-    id: lead.id,
-    dealId: lead.id,
-    companyName: businessName,
-    contactName: ownerName,
-    phone,
-    email,
-    amountRequested: amount,
-    monthlyRevenue: lead.monthlyRevenue,
-    useOfFunds: lead.purpose,
-    stage: 1,
-    status: "NEW",
-    mandateSigned: false,
-    plaidConnected: false,
-    documents: [],
-    createdAt: now,
-    estimatedSuccessFee: feeOn(amount),
-  };
-
-  const inHours = isWithinBusinessHours();
   const founderFirstName = BRAND.founder.split(" ")[0];
   const amountLabel = lang === "fr" ? `${amount.toLocaleString("fr-CA")} $` : `$${amount.toLocaleString("en-CA")}`;
 
@@ -163,7 +115,9 @@ export async function POST(req: Request) {
     `${businessName} — ${ownerName} ${phone}\n` +
     `Demande: ${amountLabel} | Revenus: ${lead.monthlyRevenueLabel || "?"} | ${lead.timeInBusiness || "?"} | NSF: ${lead.nsfCount || "?"}` +
     `${lead.existingAdvance ? " | AVANCE EN COURS" : ""} [${lang.toUpperCase()}]\n` +
-    `APPELER MAINTENANT`;
+    (hasLeadLinkSecret()
+      ? `Appeler (1 clic, chronomètre le rappel) : ${process.env.NEXT_PUBLIC_SITE_URL || new URL(req.url).origin}${leadLinkPath(lead.id)}`
+      : `APPELER MAINTENANT`);
 
   const customerSms =
     lang === "fr"
@@ -177,14 +131,21 @@ export async function POST(req: Request) {
   // Always leave a copy in the server logs so a lead is never fully lost.
   console.log("NEW_LEAD", JSON.stringify(lead));
 
+  let stored = false;
+  try {
+    await saveLead(lead);
+    stored = true;
+  } catch (err) {
+    console.error("Lead store unavailable:", (err as Error).message);
+  }
+
   const [adminSmsOk, customerSmsOk, webhookOk] = await Promise.all([
     sendSms(process.env.ADMIN_PHONE || BRAND.phoneE164, adminAlert).catch(() => false),
     sendSms(phone, customerSms).catch(() => false),
-    postToWebhook(lead).catch(() => false),
+    postToWebhook({ event: "lead.created", ...lead }).catch(() => false),
   ]);
-  const savedLocally = saveLocally(lead, deal);
 
-  if (!adminSmsOk && !webhookOk && !savedLocally) {
+  if (!adminSmsOk && !webhookOk && !stored) {
     // Nothing durable happened: tell the visitor to call instead of showing a fake success.
     return NextResponse.json({ success: false, error: "lead_not_delivered" }, { status: 502 });
   }
@@ -192,6 +153,6 @@ export async function POST(req: Request) {
   return NextResponse.json({
     success: true,
     leadId: lead.id,
-    delivery: { adminSmsOk, customerSmsOk, webhookOk, savedLocally },
+    delivery: { adminSmsOk, customerSmsOk, webhookOk, stored },
   });
 }

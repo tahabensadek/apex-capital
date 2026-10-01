@@ -41,5 +41,7 @@ export const config = {
     "/api/crm/:path*",
     "/api/board/:path*",
     "/api/underwrite/:path*",
+    "/leads/:path*",
+    "/api/leads/:path*",
   ],
 };

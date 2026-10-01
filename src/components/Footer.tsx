@@ -27,8 +27,8 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
             </div>
             <p className="text-slate-400 text-xs leading-relaxed">
               {lang === "fr"
-                ? "Nous aidons les PME québécoises refusées par la banque à trouver du financement basé sur leurs revenus."
-                : "We help Quebec small businesses that were turned down by their bank find revenue-based funding."}
+                ? "Nous aidons les PME canadiennes refusées par la banque à trouver du financement basé sur leurs revenus."
+                : "We help Canadian small businesses that were turned down by their bank find revenue-based funding."}
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                <span>La Prairie (Québec)</span>
+                <span>{lang === "fr" ? "La Prairie (Québec) · partout au Canada" : "La Prairie, Quebec · serving all of Canada"}</span>
               </div>
             </div>
           </div>
@@ -72,6 +72,9 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
                   ? `Vos renseignements servent uniquement à évaluer votre demande et à la transmettre au bailleur de fonds, avec votre consentement (Loi 25). Responsable de la protection des renseignements personnels : ${BRAND.founder}, ${BRAND.email}.`
                   : `Your information is used only to assess your request and submit it to the funder, with your consent (Quebec Law 25). Privacy officer: ${BRAND.founder}, ${BRAND.email}.`}
               </p>
+              <a href="/confidentialite" className="text-[11px] text-emerald-400 underline block">
+                {lang === "fr" ? "Politique de confidentialité" : "Privacy policy"}
+              </a>
             </div>
           </div>
 

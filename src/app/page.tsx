@@ -9,6 +9,7 @@ import { FitSection } from "@/components/FitSection";
 import { Faq } from "@/components/Faq";
 import { Footer } from "@/components/Footer";
 import { StickyMobileBar } from "@/components/StickyMobileBar";
+import { ConsentBanner } from "@/components/ConsentBanner";
 
 export default function Home() {
   const [lang, setLang] = useState<"fr" | "en">("fr");
@@ -48,6 +49,7 @@ export default function Home() {
       <Faq lang={lang} />
       <Footer lang={lang} />
       <StickyMobileBar onApplyClick={scrollToWizard} lang={lang} />
+      <ConsentBanner lang={lang} />
     </main>
   );
 }
