@@ -168,10 +168,10 @@ export async function POST(req: Request) {
   const customerSms =
     lang === "fr"
       ? `Bonjour ${ownerName.split(" ")[0]}, ici ${founderFirstName} de ${BRAND.name}. J'ai bien reçu votre demande de ${amountLabel} pour ${businessName}. ` +
-        (inHours ? "Je vous appelle dans quelques minutes." : "Je vous appelle dès l'ouverture demain matin.") +
+        (inHours ? `Je vous appelle dans quelques minutes du ${BRAND.phoneDisplay}.` : `Je vous appelle dès l'ouverture du ${BRAND.phoneDisplay}.`) +
         " Répondez ARRET pour ne plus recevoir de textos."
       : `Hi ${ownerName.split(" ")[0]}, this is ${founderFirstName} from ${BRAND.name}. I received your ${amountLabel} request for ${businessName}. ` +
-        (inHours ? "I'll call you in a few minutes." : "I'll call you first thing when we open.") +
+        (inHours ? `I'll call you in a few minutes from ${BRAND.phoneDisplay}.` : `I'll call you first thing when we open, from ${BRAND.phoneDisplay}.`) +
         " Reply STOP to opt out.";
 
   // Always leave a copy in the server logs so a lead is never fully lost.
