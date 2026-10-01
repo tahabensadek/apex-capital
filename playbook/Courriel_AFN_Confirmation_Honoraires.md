@@ -20,6 +20,10 @@ Two other things:
 
 - **DBA:** please update my DBA in your system from "Apex" to **CapitalFacile**.
 - **Marketing approval:** per sections 3 and 5 of the agreement, I'll send you my website (capitalfacile.ca), Google Ads copy and call script for written approval before launch. Please also let me know the exact wording you want me to use when I disclose that I'm an agent of AFN.
+- **Confirmation text:** when a business owner fills out my form (with consent to be contacted by phone, text and email), they get one automatic text confirming I'll call them in a few minutes. No marketing blasts, no robo-calls. Can you confirm in writing that this single confirmation text is OK under section 5?
+- **Google Ads:** does AFN run Google Ads in Canada (e.g. "merchant cash advance Canada")? I want to avoid bidding against you and will not use AFN's name in my keywords or ads.
+- **Volume and economics:** what does AFN typically receive from the lender per funded deal (so I know what my 50% looks like), and can AFN handle around 30 files a month from me?
+- **Referral partners:** may I pay a referral fee to accountants who send me clients, or does the Code of Conduct require your written consent for that?
 
 Thanks,
 
